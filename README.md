@@ -1,9 +1,49 @@
 # uble
 
-Lightweight Bluetooth Low Energy driver written in pure python for micropython
+Lightweight Bluetooth Low Energy driver written in pure python for micropython.
 
 WARNING: this project is in beta stage and is subject to changes of the
 code-base, including project-wide name changes and API changes.
+
+Features
+---------------------
+
+- Parsing and Building of HCI packets
+- Allows PyBoard to control BLE chips using HCI packets
+
+Usage
+---------------------
+
+- Parsing of HCI packets:
+
+        MicroPython v1.8.7-79-g221f88d-dirty on 2017-01-26; PYBv1.1 with STM32F405RG
+        Type "help()" for more information.
+        >>> from bluetooth_low_energy.protocols.hci import (cmd, uart)
+        >>> buf = b'\x01\x03\x0c\x00'
+        >>> hci_uart = uart.HCI_UART.from_buffer(buf)
+        >>> print(hci_uart)
+        <HCI_UART pkt_type=COMMAND(0x01) data=030c00>
+        >>> hci_cmd = cmd.HCI_COMMAND.from_buffer(hci_uart.data)
+        >>> print(hci_cmd)
+        <HCI_COMMAND opcode=0x0c03 ogf=HOST_CTL(0x03) ocf=RESET(0x03) request_data= response_data=>
+        >>> hci_cmd.to_buffer()
+        b'\x03\x0c\x00'
+        >>>
+
+        
+- Building of HCI Packets:
+
+        MicroPython v1.8.7-79-g221f88d-dirty on 2017-01-26; PYBv1.1 with STM32F405RG
+        Type "help()" for more information.
+        >>> from bluetooth_low_energy.protocols.hci import cmd
+        >>> hci_cmd = cmd.HCI_COMMAND(ogf=cmd.OGF_LE_CTL, ocf=cmd.OCF_LE_RAND)
+        >>> print(hci_cmd)
+        <HCI_COMMAND opcode=0x2018 ogf=LE_CTL(0x08) ocf=LE_RAND(0x18) request_data= response_data=>
+        >>> hci_cmd.to_buffer()
+        b'\x18 \x00'
+        >>>
+
+- Control BLE chips see 'examples'
 
 Software
 ---------------------
