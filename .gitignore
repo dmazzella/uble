@@ -87,3 +87,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# micropython-lib
+micropython-lib/bluetooth_low_energy/
+
