@@ -50,7 +50,7 @@ Software
 
 Currently implemented full HCI commands from [STSW-BLUENRG-DK 2.0.2](http://www.st.com/en/embedded-software/stsw-bluenrg-dk.html)
 
-User manual [BlueNRG-MS Bluetooth® LE stack application command interface](www.st.com/resource/en/user_manual/dm00162667.pdf)
+User manual [BlueNRG-MS Bluetooth® LE stack application command interface](http://www.st.com/resource/en/user_manual/dm00162667.pdf)
 
 
 Hardware
