@@ -60,6 +60,8 @@ Hardware
 
 Currently supported module STMicroelectronics [SPBTLE-RF](http://www.st.com/en/wireless-connectivity/spbtle-rf.html) 
 
+Availabe breakout board:
+</br>
 <table>
   <tr>
     <th>
@@ -72,7 +74,14 @@ Currently supported module STMicroelectronics [SPBTLE-RF](http://www.st.com/en/w
   </tr>
 </table>
 </br>
-Fritzing link for breakout: TODO
+
+
+Fritzing for breakout: [MicroPython_SPBTLERF_Breakout_v01_mod.fzz](https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v01/MicroPython_SPBTLERF_Breakout_v01_mod.fzz)
+
+
+Gerber for breakout: [MicroPython_SPBTLERF_Breakout_v01_mod.zip](https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v01/MicroPython_SPBTLERF_Breakout_v01_mod.zip)
+
+If have interest into preassembled breakout board contact me at damianomazzella@gmail.com
 
 External dependencies
 ---------------------
