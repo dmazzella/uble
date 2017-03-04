@@ -52,6 +52,8 @@ Currently implemented full HCI commands from [STSW-BLUENRG-DK 2.0.2](http://www.
 
 User manual [BlueNRG-MS Bluetooth® LE stack application command interface](http://www.st.com/resource/en/user_manual/dm00162667.pdf)
 
+Programming manual [BlueNRG, BlueNRG-MS stacks programming guidelines](http://www.st.com/resource/en/programming_manual/dm00141271.pdf)
+
 
 Hardware
 ---------------------
