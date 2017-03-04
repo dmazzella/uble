@@ -178,13 +178,14 @@ class BlueNRG_MS(BaseHCI):
             miso_pin=None,
             mosi_pin=None,
             vin_pin=pyb.Pin('X8', pyb.Pin.OUT_PP),
-            rst_pin=pyb.Pin('X9', pyb.Pin.OUT_PP),
+            rst_pin=pyb.Pin('Y4', pyb.Pin.OUT_PP),
             irq_pin=pyb.Pin('Y3', pyb.Pin.IN, pyb.Pin.PULL_DOWN),
             irq_handler=None,
             power_on=True,
             debug_callback=None
         ):
         """
+        MicroPython_SPBTLERF_Breakout_v01
         Defaults:
             - SPI(2) on the Y position:
                 (NSS, SCK, MISO, MOSI) = (Y5, Y6, Y7, Y8) = (PB12, PB13, PB14, PB15)
@@ -203,7 +204,7 @@ class BlueNRG_MS(BaseHCI):
             - MISO on Y7 Pin
             - MOSI on Y8 Pin
             - VIN  on X8 Pin
-            - RST  on X9 Pin
+            - RST  on Y4 Pin
             - IRQ  on Y3 Pin
         """
         self.debug_callback = debug_callback
