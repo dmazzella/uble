@@ -27,7 +27,7 @@ Usage
         >>> print(hci_cmd)
         <HCI_COMMAND opcode=0x0c03 ogf=HOST_CTL(0x03) ocf=RESET(0x03) request_data= response_data=>
         >>> hci_cmd.to_buffer()
-        b'\x03\x0c\x00'
+        b'\x03\x0c\x00'        
         >>>
 
         
@@ -60,8 +60,18 @@ Hardware
 
 Currently supported module STMicroelectronics [SPBTLE-RF](http://www.st.com/en/wireless-connectivity/spbtle-rf.html) 
 
-<a href="https://oshpark.com/shared_projects/ST79grRm"><img src="https://oshpark.com/assets/badge-5b7ec47045b78aef6eb9d83b3bac6b1920de805e9a0c227658eac6e19a045b9c.png" alt="Order from OSH Park"></img></a>
-</br></br>
+<table>
+  <tr>
+    <th>
+        <img src="https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v01/MicroPython_SPBTLERF_Breakout_v01_mod_TOP.png" width="30%" height="30%" alt="MicroPython_SPBTLERF_Breakout_v01_mod_TOP"/>
+    <img src="https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v01/MicroPython_SPBTLERF_Breakout_v01_mod_BOTTOM.png" width="30%" height="30%" alt="MicroPython_SPBTLERF_Breakout_v01_mod_BOTTOM"/>
+    </th>
+    <th>
+    <a href="https://oshpark.com/shared_projects/ST79grRm"><img src="https://oshpark.com/assets/badge-5b7ec47045b78aef6eb9d83b3bac6b1920de805e9a0c227658eac6e19a045b9c.png" alt="Order from OSH Park"/></a>
+    </th>
+  </tr>
+</table>
+</br>
 Fritzing link for breakout: TODO
 
 External dependencies
