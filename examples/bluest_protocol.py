@@ -78,8 +78,7 @@ class BlueSTProtocol(SPBTLE_RF):
             while True:
                 for evt in self.hci_isr(timeout):
                     self.__process__(evt)
-                if pyb.elapsed_millis(start) >= 1000 and \
-                    self.connection_handle is not None:
+                if pyb.elapsed_millis(start) >= 1000 and self.connection_handle is not None:
                     if any([ACCELEROMETER_EXAMPLE,
                             GYROSCOPE_EXAMPLE,
                             MAGNETOMETER_EXAMPLE]):
@@ -493,8 +492,7 @@ class BlueSTProtocol(SPBTLE_RF):
                         write_status=False,
                         err_code=0,
                         att_val_len=hci_evt.struct.data_length,
-                        att_val=\
-                            hci_evt.struct.data[:hci_evt.struct.data_length]
+                        att_val=hci_evt.struct.data[:hci_evt.struct.data_length]
                         ).response_struct
                     if result.status != status.BLE_STATUS_SUCCESS:
                         self.attribute_modified_cb(
