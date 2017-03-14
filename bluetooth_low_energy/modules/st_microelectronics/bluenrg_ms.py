@@ -289,17 +289,13 @@ class BlueNRG_MS(BaseHCI):
         """enable_spi_irq"""
         self._irq_ext_int.enable()
 
-    def set_spi_irq_as_output(self, irq_pin=pyb.Pin('Y3')):
+    def set_spi_irq_as_output(self):
         """Pull IRQ high"""
-        irq_pin.init(pyb.Pin.OUT_PP,
-                     pull=pyb.Pin.PULL_NONE,
-                     #speed=pyb.Pin.SPEED_LOW,
-                     value=1)
+        self._irq_pin.init(pyb.Pin.OUT_PP, pull=pyb.Pin.PULL_NONE, value=1)
 
-    def set_spi_irq_as_input(self, irq_pin=pyb.Pin('Y3')):
+    def set_spi_irq_as_input(self):
         """IRQ input"""
-        irq_pin.init(pyb.Pin.IN,
-                     pull=pyb.Pin.PULL_DOWN)
+        self._irq_pin.init(pyb.Pin.IN, pull=pyb.Pin.PULL_DOWN)
 
     def hw_bootloader(self):
         """hw_bootloader"""
