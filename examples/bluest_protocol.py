@@ -69,31 +69,19 @@ class BlueSTProtocol(SPBTLE_RF):
         self.temperature_bluest_char_handle = None
         self.pwr_bluest_char_handle = None
 
-        self.reset()
+    def run(self, *args, **kwargs):
+        def callback():
+            if self.connection_handle is not None:
+                if any([ACCELEROMETER_EXAMPLE, GYROSCOPE_EXAMPLE, MAGNETOMETER_EXAMPLE]):
+                    self.accgyromag_update()
+                if TEMPERATURE_EXAMPLE:
+                    self.temp_update()
+                if PRESS_EXAMPLE:
+                    self.press_update()
+                if PWR_EXAMPE:
+                    self.pwr_update()
 
-    def run(self, timeout=250):
-        try:
-            self.__start__()
-            start = pyb.millis()
-            while True:
-                for evt in self.hci_isr(timeout):
-                    self.__process__(evt)
-                if pyb.elapsed_millis(start) >= 1000 and self.connection_handle is not None:
-                    if any([ACCELEROMETER_EXAMPLE,
-                            GYROSCOPE_EXAMPLE,
-                            MAGNETOMETER_EXAMPLE]):
-                        self.accgyromag_update()
-                    if TEMPERATURE_EXAMPLE:
-                        self.temp_update()
-                    if PRESS_EXAMPLE:
-                        self.press_update()
-                    if PWR_EXAMPE:
-                        self.pwr_update()
-                    start = pyb.millis()
-        except (KeyboardInterrupt, StopIteration):
-            pass
-        finally:
-            self.__stop__()
+        super(BlueSTProtocol, self).run(callback=callback, callback_time=1000)
 
     def __start__(self):
         # Reset BlueNRG-MS

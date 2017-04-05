@@ -98,7 +98,7 @@ class SensorDemo(SPBTLE_RF):
     """
     def __init__(self, *args, **kwargs):
         super(SensorDemo, self).__init__(*args, **kwargs)
-        self.bdaddr = bytes(reversed([0x12, 0x34, 0x00, 0xE1, 0x80, 0x02]))
+        self.bdaddr = bytes(reversed([0x14, 0x34, 0x00, 0xE1, 0x80, 0x02]))
         self.connection_handle = None
         self.name = b'BlueNRG'
 
@@ -113,8 +113,16 @@ class SensorDemo(SPBTLE_RF):
 
         self.reset()
 
-    def run(self, timeout=250):
-        super(SensorDemo, self).run(timeout=timeout)
+    def run(self, *args, **kwargs):
+        def callback():
+            if self.connection_handle is not None:
+                # self.free_fall_notify()
+                self.acc_update()
+                self.temp_update()
+                self.press_update()
+                self.humidity_update()
+
+        super(SensorDemo, self).run(callback=callback, callback_time=1000)
 
     def __start__(self):
 
@@ -148,7 +156,7 @@ class SensorDemo(SPBTLE_RF):
         if result.status != BLE_STATUS_SUCCESS:
             raise ValueError("aci_hal_write_config_data status: {:02x}".format(
                 result.status))
-        log.debug("aci_hal_write_config_data PUBADDR: %02x", result.status)
+        log.info("Public address: %s", hexlify(bytes(reversed(self.bdaddr)), ":"))
 
         # Configure BlueNRG Mode
         result = self.aci_hal_write_config_data(
@@ -214,7 +222,7 @@ class SensorDemo(SPBTLE_RF):
         # Set output power level
         result = self.aci_hal_set_tx_power_level(
             en_high_power=1,
-            pa_level=4).response_struct
+            pa_level=5).response_struct
         if result.status != BLE_STATUS_SUCCESS:
             raise ValueError("aci_hal_set_tx_power_level status: {:02x}".format(
                 result.status))
@@ -249,9 +257,9 @@ class SensorDemo(SPBTLE_RF):
             char_uuid_type=UUID_TYPE_128,
             char_uuid=free_fall_char_uuid,
             char_value_len=1,
-            char_properties=CHAR_PROP_NOTIFY,
+            char_properties=CHAR_PROP_NOTIFY|CHAR_PROP_READ,
             sec_permissions=ATTR_PERMISSION_NONE,
-            gatt_evt_mask=GATT_DONT_NOTIFY_EVENTS,
+            gatt_evt_mask=GATT_NOTIFY_READ_REQ_AND_WAIT_FOR_APPL_RESP,
             encry_key_size=MAX_ENCRY_KEY_SIZE,
             is_variable=False).response_struct
         if result.status != BLE_STATUS_SUCCESS:
@@ -343,8 +351,8 @@ class SensorDemo(SPBTLE_RF):
             service_handle=self.env_serv_handle,
             char_uuid_type=UUID_TYPE_128,
             char_uuid=temp_char_uuid,
-            char_value_len=1,
-            char_properties=CHAR_PROP_READ,
+            char_value_len=2,
+            char_properties=CHAR_PROP_NOTIFY|CHAR_PROP_READ,
             sec_permissions=ATTR_PERMISSION_NONE,
             gatt_evt_mask=GATT_NOTIFY_READ_REQ_AND_WAIT_FOR_APPL_RESP,
             encry_key_size=MAX_ENCRY_KEY_SIZE,
@@ -387,7 +395,7 @@ class SensorDemo(SPBTLE_RF):
             char_uuid_type=UUID_TYPE_128,
             char_uuid=press_char_uuid,
             char_value_len=2,
-            char_properties=CHAR_PROP_READ,
+            char_properties=CHAR_PROP_NOTIFY|CHAR_PROP_READ,
             sec_permissions=ATTR_PERMISSION_NONE,
             gatt_evt_mask=GATT_NOTIFY_READ_REQ_AND_WAIT_FOR_APPL_RESP,
             encry_key_size=MAX_ENCRY_KEY_SIZE,
@@ -426,7 +434,7 @@ class SensorDemo(SPBTLE_RF):
             char_uuid_type=UUID_TYPE_128,
             char_uuid=humidity_char_uuid,
             char_value_len=2,
-            char_properties=CHAR_PROP_READ,
+            char_properties=CHAR_PROP_NOTIFY|CHAR_PROP_READ,
             sec_permissions=ATTR_PERMISSION_NONE,
             gatt_evt_mask=GATT_NOTIFY_READ_REQ_AND_WAIT_FOR_APPL_RESP,
             encry_key_size=MAX_ENCRY_KEY_SIZE,
@@ -567,9 +575,6 @@ class SensorDemo(SPBTLE_RF):
                     )
                 elif hci_evt.subevtcode == EVT_BLUE_GATT_READ_PERMIT_REQ:
                     self.read_request_cb(hci_evt.struct.attr_handle)
-
-        # self.free_fall_notify()
-        self.acc_update()
 
     def gap_connection_complete_cb(self, address, handle):
         log.info("gap_connection_complete_cb")

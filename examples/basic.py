@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import gc
-
 gc.threshold(4096)
 
 import logging
@@ -15,7 +14,6 @@ from bluetooth_low_energy.modules.st_microelectronics.spbtle_rf import (
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("examples.basic")
 
-
 class Basic(SPBTLE_RF):
     """
     Simple example for print BlueNRG-MS firmware versione
@@ -23,7 +21,7 @@ class Basic(SPBTLE_RF):
     def __init__(self, *args, **kwargs):
         super(Basic, self).__init__(*args, **kwargs)
 
-    def run(self, timeout=100):
+    def run(self, *args, **kwargs):
         # Reset BlueNRG-MS
         self.reset()
 
@@ -36,3 +34,4 @@ class Basic(SPBTLE_RF):
         # Get the BlueNRG FW versions
         version = self.get_version()
         log.info("current version %s", version)
+
