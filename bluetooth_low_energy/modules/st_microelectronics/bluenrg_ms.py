@@ -299,11 +299,13 @@ class BlueNRG_MS(BaseHCI):
 
     def disable_spi_irq(self):
         """disable_spi_irq"""
-        self._irq_ext_int.disable()
+        # self._irq_ext_int.disable()
+        pass
 
     def enable_spi_irq(self):
         """enable_spi_irq"""
-        self._irq_ext_int.enable()
+        # self._irq_ext_int.enable()
+        pass
 
     def set_spi_irq_as_output(self):
         """Pull IRQ high"""
