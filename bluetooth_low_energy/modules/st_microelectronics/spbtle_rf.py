@@ -11,7 +11,6 @@ class SPBTLE_RF(BlueNRG_MS):
     """
     def __init__(self, *args, **kwargs):
         super(SPBTLE_RF, self).__init__(*args, **kwargs)
-        self.reset()
 
     def __start__(self):
         super(SPBTLE_RF, self).__start__()

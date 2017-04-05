@@ -42,11 +42,41 @@ from bluetooth_low_energy.protocols.hci.cmd import (
     HCI_COMMAND)
 
 
-# Timeout Exception
-class TimeoutException(Exception):
-    """TimeoutException"""
-    def __init__(self, message):
-        super(TimeoutException, self).__init__(message)
+# # IncorrectPacketType Exception
+# class IncorrectPacketType(Exception):
+#     """IncorrectPacketType"""
+#     def __init__(self, message):
+#         super(IncorrectPacketType, self).__init__(message)
+
+# # WrongPacketLength Exception
+# class WrongPacketLength(Exception):
+#     """WrongPacketLength"""
+#     def __init__(self, message):
+#         super(WrongPacketLength, self).__init__(message)
+
+# # Write Exception
+# class WriteException(Exception):
+#     """WriteException"""
+#     def __init__(self, message):
+#         super(WriteException, self).__init__(message)
+
+# # Read Exception
+# class ReadException(Exception):
+#     """ReadException"""
+#     def __init__(self, message):
+#         super(ReadException, self).__init__(message)
+
+# # MaxRetryException Exception
+# class MaxRetryException(Exception):
+#     """MaxRetryException"""
+#     def __init__(self, message):
+#         super(MaxRetryException, self).__init__(message)
+
+# # Timeout Exception
+# class TimeoutException(Exception):
+#     """TimeoutException"""
+#     def __init__(self, message):
+#         super(TimeoutException, self).__init__(message)
 
 # Hardware Exception
 class HardwareException(Exception):
@@ -56,72 +86,8 @@ class HardwareException(Exception):
 
 class BaseHCI(object):
     """
-    AbstractBaseClass
+    BaseHCI
     """
-    def read(self, size=HCI_READ_PACKET_SIZE):
-        """
-        Abstract read method
-        """
-        raise NotImplementedError()
-
-    def write(self, header, param):
-        """
-        Abstract write method
-        """
-        raise NotImplementedError()
-
-    def __start__(self):
-        raise NotImplementedError()
-
-    def __stop__(self):
-        raise NotImplementedError()
-
-    def __process__(self, event):
-        raise NotImplementedError()
-
-    def run(self, timeout=100):
-        """
-        BLE event loop
-
-        Note: This function call __start__() when invoked and __stop__() when
-              KeyboardInterrupt, StopIteration or an Exception
-              is raised.
-
-              __process__() called whenever there is an event to be processed
-        """
-        try:
-            self.__start__()
-            while True:
-                for event in self.hci_isr(timeout):
-                    self.__process__(event)
-        except (KeyboardInterrupt, StopIteration):
-            pass
-        finally:
-            self.__stop__()
-
-    def hci_isr(self, timeout=100):
-        """
-        Abstract hci_isr method
-        """
-        raise NotImplementedError()
-
-    def hci_verify(self, hci_pckt):
-        """
-        Abstract hci_verify method
-        """
-        raise NotImplementedError()
-
-    def hci_send_cmd(self, cmd, is_async=False):
-        """
-        Abstract hci_send_cmd method
-        """
-        raise NotImplementedError()
-
-    def hci_send(self, header, param=b'', retry=10):
-        """
-        Abstract hci_send method
-        """
-        raise NotImplementedError()
 
     ###########################################################################
     #                         HCI Library Functions                           #

@@ -1,22 +1,29 @@
 # -*- coding: utf-8 -*-
 import pyb
 import ustruct
-from ubinascii import hexlify, unhexlify
-from micropython import const
+# import heapq
 
 from bluetooth_low_energy.modules.base_hci import (
     BaseHCI,
+    # IncorrectPacketType,
+    # WrongPacketLength,
+    # WriteException,
+    # ReadException,
+    # MaxRetryException,
     HardwareException,
-    TimeoutException)
+    # TimeoutException
+)
 from bluetooth_low_energy.protocols.hci import (
     HCI_COMMAND_PKT,
     HCI_EVENT_HDR_SIZE,
     HCI_EVENT_PKT,
-    HCI_READ_PACKET_SIZE)
+    HCI_READ_PACKET_SIZE
+)
 from bluetooth_low_energy.protocols.hci.cmd import (
     HCI_COMMAND,
     HCI_COMMANDS,
-    OGF_VENDOR_CMD)
+    OGF_VENDOR_CMD
+)
 from bluetooth_low_energy.protocols.hci.event import (
     EVT_CMD_COMPLETE,
     EVT_CMD_STATUS,
@@ -25,11 +32,14 @@ from bluetooth_low_energy.protocols.hci.event import (
     EVT_VENDOR,
     HCI_EVENT,
     HCI_EVENTS,
-    HCI_VENDOR_EVENTS)
+    HCI_VENDOR_EVENTS
+)
 from bluetooth_low_energy.protocols.hci.status import (
-    BLE_STATUS_SUCCESS)
+    BLE_STATUS_SUCCESS
+)
 from bluetooth_low_energy.protocols.hci.uart import (
-    HCI_UART)
+    HCI_UART
+)
 from bluetooth_low_energy.protocols.hci.vendor_specifics.st_microelectronics.bluenrg_ms.cmd import (
     HCI_VENDOR_COMMANDS,
     OCF_ATT_EXECUTE_WRITE_REQ,
@@ -133,13 +143,16 @@ from bluetooth_low_energy.protocols.hci.vendor_specifics.st_microelectronics.blu
     OCF_UPDATER_READ_DATA_BLOCK,
     OCF_UPDATER_REBOOT,
     OCF_UPDATER_RESET_BLUE_FLAG,
-    OCF_UPDATER_START)
+    OCF_UPDATER_START
+)
 from bluetooth_low_energy.protocols.hci.vendor_specifics.st_microelectronics.bluenrg_ms.constant import (
-    UUID_TYPE_16)
+    UUID_TYPE_16
+)
 from bluetooth_low_energy.protocols.hci.vendor_specifics.st_microelectronics.bluenrg_ms.event import (
     HCI_VENDOR_EVENTS as ST_HCI_VENDOR_EVENTS
 )
-
+from micropython import const, heap_lock, heap_unlock
+from ubinascii import hexlify, unhexlify
 
 # Add ST Microelectronics Vendor Specific HCI_COMMANDS
 HCI_COMMANDS[OGF_VENDOR_CMD] = HCI_VENDOR_COMMANDS
@@ -149,43 +162,50 @@ HCI_VENDOR_EVENTS.update(ST_HCI_VENDOR_EVENTS)
 HCI_PCK_TYPE_OFFSET = const(0)
 EVENT_PARAMETER_TOT_LEN_OFFSET = const(2)
 
-SPBTLE_RF_EVENT_AVAILABLE = False
+# class IRQHandler(object):
+#     """IRQHandler"""
+
+#     def __init__(self, hci_isr):
+#         self._hci_isr = hci_isr
+
+#     def callback(self, irqno):
+#         """callback"""
+#         heap_unlock()
+#         self._hci_isr()
+#         heap_lock()
 
 
-class IRQHandler(object):
-    """IRQHandler"""
-
+class CSContext(object):
     def __init__(self, pin):
         self._pin = pin
-
-    def callback(self, irqno):
-        """callback"""
-        global SPBTLE_RF_EVENT_AVAILABLE
-        if isinstance(self._pin, pyb.Pin):
-            SPBTLE_RF_EVENT_AVAILABLE = bool(self._pin.value())
-
+    def __enter__(self):
+        # Assert CS line
+        self._pin.low()
+    def __exit__(self, exc_type, exc_value, traceback):
+        # Release CS line
+        self._pin.high()
+        return all(map(lambda x: x is None, [exc_type, exc_value, traceback]))
 
 class BlueNRG_MS(BaseHCI):
     """
     Bluetooth Low Energy Network Processor supporting
     Bluetooth 4.1 core specification
     """
+
     def __init__(
-            self,
-            spi_bus=pyb.SPI(2, pyb.SPI.MASTER, baudrate=8000000, polarity=0),
-            nss_pin=pyb.Pin('Y5', pyb.Pin.OUT_PP),
-            sck_pin=None,
-            miso_pin=None,
-            mosi_pin=None,
-            vin_pin=pyb.Pin('X8', pyb.Pin.OUT_PP),
-            rst_pin=pyb.Pin('Y4', pyb.Pin.OUT_PP),
-            irq_pin=pyb.Pin('Y3', pyb.Pin.IN, pyb.Pin.PULL_DOWN),
-            irq_handler=None,
-            power_on=True,
-            debug_callback=None
-        ):
+        self,
+        spi_bus=pyb.SPI(2, pyb.SPI.MASTER, baudrate=8000000, polarity=0),
+        nss_pin=pyb.Pin('Y5', pyb.Pin.OUT_PP),
+        sck_pin=None,
+        miso_pin=None,
+        mosi_pin=None,
+        vin_pin=pyb.Pin('X8', pyb.Pin.OUT_PP),
+        rst_pin=pyb.Pin('X9', pyb.Pin.OUT_PP),
+        irq_pin=pyb.Pin('Y3', pyb.Pin.IN, pyb.Pin.PULL_DOWN),
+        irq_handler=None,
+        power_on=True
+    ):
         """
-        MicroPython_SPBTLERF_Breakout_v01
         Defaults:
             - SPI(2) on the Y position:
                 (NSS, SCK, MISO, MOSI) = (Y5, Y6, Y7, Y8) = (PB12, PB13, PB14, PB15)
@@ -204,10 +224,9 @@ class BlueNRG_MS(BaseHCI):
             - MISO on Y7 Pin
             - MOSI on Y8 Pin
             - VIN  on X8 Pin
-            - RST  on Y4 Pin
+            - RST  on X9 Pin
             - IRQ  on Y3 Pin
         """
-        self.debug_callback = debug_callback
 
         if not isinstance(spi_bus, pyb.SPI):
             raise TypeError("")
@@ -219,6 +238,9 @@ class BlueNRG_MS(BaseHCI):
         o_pins = (sck_pin, miso_pin, mosi_pin)
         if not all([isinstance(pin, (pyb.Pin, type(None))) for pin in o_pins]):
             raise TypeError("")
+
+        # queue contains verified hci packets
+        # self._hci_read_pkt_queue = []
 
         self._spi_bus = spi_bus
 
@@ -232,29 +254,23 @@ class BlueNRG_MS(BaseHCI):
         self._vin_pin = vin_pin
         self._rst_pin = rst_pin
 
-        self._irq_handler = irq_handler
-        if not self._irq_handler:
-            self._irq_handler = IRQHandler(self._irq_pin)
+        # self._irq_handler = irq_handler
+        # if not self._irq_handler:
+        #     self._irq_handler = IRQHandler(self.hci_isr)
 
-        self._irq_ext_int = pyb.ExtInt(
-            self._irq_pin,
-            pyb.ExtInt.IRQ_RISING_FALLING,
-            pyb.Pin.PULL_DOWN,
-            getattr(self._irq_handler, 'callback')
-        )
+        # self._irq_ext_int = pyb.ExtInt(
+        #     self._irq_pin,
+        #     pyb.ExtInt.IRQ_RISING,
+        #     pyb.Pin.PULL_DOWN,
+        #     getattr(self._irq_handler, 'callback')
+        # )
+
+        # Release CS line
+        self._nss_pin.high()
 
         # POWER ON
         if power_on:
             self.power_on()
-
-    def __start__(self):
-        super(BlueNRG_MS, self).__start__()
-
-    def __stop__(self):
-        super(BlueNRG_MS, self).__stop__()
-
-    def __process__(self, event):
-        super(BlueNRG_MS, self).__process__(event)
 
     def power_on(self):
         """
@@ -306,7 +322,45 @@ class BlueNRG_MS(BaseHCI):
         self.set_spi_irq_as_input()
         self.enable_spi_irq()
 
-    def read(self, size=HCI_READ_PACKET_SIZE):
+    def run(self, callback=None, callback_time=1000):
+        """
+        BLE event loop
+
+        Note: This function call __start__() when invoked and __stop__() when
+              KeyboardInterrupt, StopIteration or an Exception
+              is raised.
+
+              __process__() called whenever there is an event to be processed
+        """
+        try:
+            self.__start__()
+            start = pyb.millis()
+            while True:
+                event = self.read(retry=5)
+                if self.hci_verify(event):
+                    self.__process__(event)
+                # user defined periodic callback
+                if callable(callback) and pyb.elapsed_millis(start) >= callback_time:
+                    callback()
+                    start = pyb.millis()
+
+        except (KeyboardInterrupt, StopIteration) as ex:
+            raise ex
+        except Exception as ex:
+            raise ex
+        finally:
+            self.__stop__()
+
+    def __start__(self):
+        raise NotImplementedError()
+
+    def __stop__(self):
+        raise NotImplementedError()
+
+    def __process__(self, event):
+        raise NotImplementedError()
+
+    def read(self, size=HCI_READ_PACKET_SIZE, retry=5):
         """
         Read packet from BlueNRG-MS module
         """
@@ -314,35 +368,29 @@ class BlueNRG_MS(BaseHCI):
         # Exchange header
         header_master = b'\x0B\x00\x00\x00\x00'
         header_slave = bytearray(len(header_master))
-        header_slave_correctly_received = False
-        try:
-            # CS reset
-            self._nss_pin.low()
-            if not header_slave_correctly_received:
+        while retry:
+            with CSContext(self._nss_pin):
                 self._spi_bus.send_recv(header_master, header_slave)
-            rx_read_bytes = (header_slave[4] << 8) | header_slave[3]
-            if header_slave[0] == 0x02 and rx_read_bytes:
-                # SPI is ready
-                header_slave_correctly_received = True
-                if rx_read_bytes > 0:
+                rx_read_bytes = (header_slave[4] << 8) | header_slave[3]
+                if header_slave[0] == 0x02 and rx_read_bytes > 0:
+                    # SPI is ready
                     # avoid to read more data that size of the buffer
                     if rx_read_bytes > size:
                         rx_read_bytes = size
                     data = b'\xFF' * rx_read_bytes
-                    result = bytearray(len(data))
+                    result = bytearray(rx_read_bytes)
                     self._spi_bus.send_recv(data, result)
-            else:
-                # SPI is not ready
-                pass
-        finally:
-            # Release CS line
-            self._nss_pin.high()
+                    break
+                else:
+                    pyb.udelay(150)
+            retry -= 1
+
         # Add a small delay to give time to the BlueNRG to set the IRQ pin low
         # to avoid a useless SPI read at the end of the transaction
         pyb.udelay(150)
         return result
 
-    def write(self, header, param):
+    def write(self, header, param, retry=5):
         """
         Write packet to BlueNRG-MS module
         """
@@ -350,26 +398,23 @@ class BlueNRG_MS(BaseHCI):
         # Exchange header
         header_master = b'\x0A\x00\x00\x00\x00'
         header_slave = bytearray(len(header_master))
-        # Check if BlueNRG-MS is in sleep mode
-        # Maximum timeout is 0.5 ms
-        start = pyb.micros()
-        while pyb.elapsed_micros(start) <= 500:
-            try:
-                # CS reset
-                self._nss_pin.low()
+        while retry:
+            with CSContext(self._nss_pin):
                 self._spi_bus.send_recv(header_master, header_slave)
                 rx_write_bytes = header_slave[1]
                 rx_read_bytes = (header_slave[4] << 8) | header_slave[3]
                 if header_slave[0] == 0x02 and (
-                        rx_write_bytes or rx_read_bytes
-                    ):
+                    rx_write_bytes > 0 or rx_read_bytes > 0
+                ):
                     # SPI is ready
                     if header:
+                        # avoid to write more data that size of the buffer
                         if rx_write_bytes >= len(header):
                             result = bytearray(len(header))
                             self._spi_bus.send_recv(header, result)
-                            rx_write_bytes -= len(header)
                             if param:
+                                rx_write_bytes -= len(header)
+                                # avoid to read more data that size of the buffer
                                 if len(param) > rx_write_bytes:
                                     tx_bytes = rx_write_bytes
                                 else:
@@ -384,72 +429,81 @@ class BlueNRG_MS(BaseHCI):
                     else:
                         break
                 else:
-                    # SPI is not ready
-                    continue
-            finally:
-                # Release CS line
-                self._nss_pin.high()
-        else:
-            raise TimeoutException(pyb.elapsed_micros(start))
+                    pyb.udelay(150)
+            retry -= 1
+
         return result
+
 
     def hci_verify(self, hci_pckt):
         """
         Verify HCI packet
         """
+        if hci_pckt is None:
+            return False
+
         if hci_pckt[HCI_PCK_TYPE_OFFSET] != HCI_EVENT_PKT:
-            raise TypeError()
+            # raise IncorrectPacketType('')
+            return False
+
         if hci_pckt[EVENT_PARAMETER_TOT_LEN_OFFSET] != \
                 len(hci_pckt) - (1 + HCI_EVENT_HDR_SIZE):
+            # raise WrongPacketLength("packet truncated or too long")
+            return False
 
-            raise Exception("Wrong length (packet truncated or too long)")
-        if callable(self.debug_callback):
-            self.debug_callback("hci_verify: {:s}".format(hexlify(hci_pckt)))
         return True
 
-    def hci_isr(self, timeout=100):
-        """
-        Iterrupt service routine that must be called when the BlueNRG-MS
-        reports a packet received or an event to the host through the
-        BlueNRG-MS interrupt line.
-        """
-        global SPBTLE_RF_EVENT_AVAILABLE
-        start = pyb.millis()
-        while SPBTLE_RF_EVENT_AVAILABLE or pyb.elapsed_millis(start) <= timeout:
-            event = self.read()
-            if event and self.hci_verify(event):
-                yield event
+    # def hci_isr(self, run_one=False, retry=5):
+    #     """
+    #     Iterrupt service routine that must be called when the BlueNRG-MS
+    #     reports a packet received or an event to the host through the
+    #     BlueNRG-MS interrupt line.
+    #     """
+    #     while self.any() or run_one:
+    #         event = self.read(retry=retry)
+    #         if self.hci_verify(event):
+    #             _micros, _event = pyb.micros(), bytes(event)
+    #             heapq.heappush(self._hci_read_pkt_queue, (_micros, _event))
+    #         if run_one:
+    #             break
 
-    def hci_wait_event(self, evtcode=0, subevtcode=0, timeout=100):
+    # def get_event(self):
+    #     """get_event"""
+    #     if len(self._hci_read_pkt_queue):
+    #         _micros, _event = heapq.heappop(self._hci_read_pkt_queue)
+    #         return _event
+
+    def hci_wait_event(self, evtcode=0, subevtcode=0, timeout=1000, retry=5):
         """
         Wait for event and filter it if needed
         """
-        for event in self.hci_isr(timeout=timeout):
-            hci_uart = HCI_UART.from_buffer(event)
-            if callable(self.debug_callback):
-                self.debug_callback(hci_uart)
-            if hci_uart.pkt_type == HCI_EVENT_PKT:
-                hci_evt = HCI_EVENT.from_buffer(hci_uart.data)
-                if callable(self.debug_callback):
-                    self.debug_callback(hci_evt)
-                if not evtcode and not subevtcode:
-                    return hci_evt
-                if subevtcode:
-                    if hci_evt.evtcode in (EVT_LE_META_EVENT, EVT_VENDOR):
-                        if hci_evt.subevtcode == subevtcode:
+        # Maximum timeout is 1 seconds
+        start = pyb.millis()
+        while pyb.elapsed_millis(start) <= min(timeout, 1000):
+            event = self.read(retry=retry)
+            if self.hci_verify(event) and isinstance(event, (bytearray, bytes)):
+                hci_uart = HCI_UART.from_buffer(event)
+                if hci_uart.pkt_type == HCI_EVENT_PKT:
+                    hci_evt = HCI_EVENT.from_buffer(hci_uart.data)
+                    if not evtcode and not subevtcode:
+                        return hci_evt
+                    if subevtcode:
+                        if hci_evt.evtcode in (EVT_LE_META_EVENT, EVT_VENDOR):
+                            if hci_evt.subevtcode == subevtcode:
+                                return hci_evt
+                            else:
+                                raise ValueError("unexpected subevtcode")
+                    if evtcode:
+                        if hci_evt.evtcode == evtcode:
                             return hci_evt
                         else:
-                            raise ValueError("unexpected subevtcode")
-                if evtcode:
-                    if hci_evt.evtcode == evtcode:
-                        return hci_evt
-                    else:
-                        raise ValueError("unexpected evtcode")
+                            raise ValueError("unexpected evtcode")
+                else:
+                    raise TypeError("not HCI_EVENT_PKT")
             else:
-                raise TypeError("not HCI_EVENT_PKT")
+                continue
 
-
-    def hci_send_cmd(self, cmd, is_async=False):
+    def hci_send_cmd(self, cmd, is_async=False, timeout=1000, retry=5):
         """hci_send_cmd"""
         if not isinstance(cmd, HCI_COMMAND):
             raise TypeError("HCI_COMMAND")
@@ -463,70 +517,42 @@ class BlueNRG_MS(BaseHCI):
             return
 
         # Maximum timeout is 1 seconds
-        timeout = pyb.millis()
-        while pyb.elapsed_millis(timeout) <= 1000:
-            event = self.read()
-            if event and self.hci_verify(event):
+        start = pyb.millis()
+        while pyb.elapsed_millis(start) <= min(timeout, 1000):
+            event = self.read(retry=retry)
+            if self.hci_verify(event) and isinstance(event, (bytearray, bytes)):
                 hci_uart = HCI_UART.from_buffer(event)
-                if callable(self.debug_callback):
-                    self.debug_callback(hci_uart)
                 if hci_uart.pkt_type == HCI_EVENT_PKT:
                     hci_evt = HCI_EVENT.from_buffer(hci_uart.data)
-                    if callable(self.debug_callback):
-                        self.debug_callback(hci_evt)
                     if hci_evt.evtcode == EVT_CMD_STATUS:
-                        if callable(self.debug_callback):
-                            self.debug_callback("EVT_CMD_STATUS")
                         if hci_evt.struct.opcode != cmd.opcode:
                             raise ValueError(hci_evt.struct.opcode)
-                        if cmd.evtcode != EVT_CMD_STATUS:
+                        if cmd.evtcode != hci_evt.evtcode:
                             if hci_evt.struct.status != BLE_STATUS_SUCCESS:
                                 raise ValueError(hci_evt.struct.status)
                         cmd.response_data = hci_evt.data[hci_evt.struct_size:]
                         return event
                     elif hci_evt.evtcode == EVT_CMD_COMPLETE:
-                        if callable(self.debug_callback):
-                            self.debug_callback("EVT_CMD_COMPLETE")
                         if hci_evt.struct.opcode != cmd.opcode:
                             raise ValueError(hci_evt.struct.opcode)
                         cmd.response_data = hci_evt.data[hci_evt.struct_size:]
                         return event
                     elif hci_evt.evtcode == EVT_LE_META_EVENT:
-                        if callable(self.debug_callback):
-                            self.debug_callback("EVT_LE_META_EVENT")
                         if hci_evt.subevtcode != cmd.evtcode:
                             raise ValueError(hci_evt.subevtcode)
                         cmd.response_data = hci_evt.data[hci_evt.struct_size:]
                         return event
-                    elif hci_evt.evtcode == EVT_VENDOR:
-                        if callable(self.debug_callback):
-                            self.debug_callback("EVT_VENDOR")
-                        #if hci_evt.subevtcode != cmd.evtcode:
-                        #    raise ValueError(hci_evt.subevtcode)
-                        #cmd.response_data = hci_evt.data[hci_evt.struct_size:]
-                        #return event
                     elif hci_evt.evtcode == EVT_HARDWARE_ERROR:
-                        if callable(self.debug_callback):
-                            self.debug_callback("EVT_HARDWARE_ERROR")
                         cmd.response_data = hci_evt.data[hci_evt.struct_size:]
-                        raise HardwareException(cmd.response_struct.code)
+                        raise HardwareException(cmd.response_data)
+            else:
+                continue
 
-    def hci_send(self, header, param=b'', retry=10):
+    def hci_send(self, header, param=b'', retry=5):
         """
         Send HCI Header, if data available send it
         """
-        while retry:
-            try:
-                if self.write(header, param):
-                    if callable(self.debug_callback):
-                        self.debug_callback("hci_send: {:s} {:s}".format(
-                            hexlify(header), hexlify(param)))
-                    break
-            except TimeoutException:
-                retry -= 1
-        else:
-            if retry <= 0:
-                raise RuntimeError("Maximum retry")
+        return self.write(header, param, retry=retry)
 
     def get_version(self):
         """
@@ -537,9 +563,9 @@ class BlueNRG_MS(BaseHCI):
         if response.status != BLE_STATUS_SUCCESS:
             raise ValueError("status")
         fw_major = response.hci_revision & 0xFF
-        fw_minor = (response.lmp_pal_subversion & 0xF0)>>4
+        fw_minor = (response.lmp_pal_subversion & 0xF0) >> 4
         fw_qualifier = (response.lmp_pal_subversion & 0xF)
-        patch = ('' if fw_qualifier == 0 else chr(96+fw_qualifier))
+        patch = ('' if fw_qualifier == 0 else chr(96 + fw_qualifier))
         dev = ('dev' if response.lmp_pal_subversion & 0x8000 else '')
         return ''.join(['.'.join(map(str, [fw_major, fw_minor])), patch, dev])
 
@@ -916,7 +942,7 @@ class BlueNRG_MS(BaseHCI):
             num_whitelist_entries=0, addr_array=b''):
         """aci_gap_start_auto_conn_establish_proc_IDB05A1"""
         data = ustruct.pack(
-            "<HHBHHHHHHB{:d}s".format(num_whitelist_entries*7),
+            "<HHBHHHHHHB{:d}s".format(num_whitelist_entries * 7),
             scan_interval, scan_window,
             own_bdaddr_type,
             conn_min_interval, conn_max_interval, conn_latency,
@@ -940,7 +966,7 @@ class BlueNRG_MS(BaseHCI):
             addr_array=b''):
         """aci_gap_start_auto_conn_establish_proc_IDB04A1"""
         data = ustruct.pack(
-            "<HHBHHHHHHB6sB{:d}s".format(num_whitelist_entries*7),
+            "<HHBHHHHHHB6sB{:d}s".format(num_whitelist_entries * 7),
             scan_interval, scan_window,
             own_bdaddr_type,
             conn_min_interval, conn_max_interval, conn_latency,
@@ -996,7 +1022,7 @@ class BlueNRG_MS(BaseHCI):
             num_whitelist_entries=0, addr_array=b''):
         """aci_gap_start_selective_conn_establish_proc"""
         data = ustruct.pack(
-            "<BHHBBB{:d}s".format(num_whitelist_entries*7),
+            "<BHHBBB{:d}s".format(num_whitelist_entries * 7),
             scan_type, scan_interval, scan_window, own_address_type,
             int(filter_duplicates), num_whitelist_entries, addr_array)
         hci_cmd = HCI_COMMAND(
@@ -1006,7 +1032,6 @@ class BlueNRG_MS(BaseHCI):
             evtcode=EVT_CMD_STATUS)
         self.hci_send_cmd(hci_cmd)
         return hci_cmd
-
 
     def aci_gap_create_connection(
             self, scan_interval=0, scan_window=0, peer_bdaddr_type=0,
@@ -1099,7 +1124,8 @@ class BlueNRG_MS(BaseHCI):
             num_whitelist_entries=0, addr_array=b''):
         """aci_gap_set_broadcast_mode"""
         data = ustruct.pack(
-            "<HHBBB{:d}sB{:d}s".format(adv_data_length, num_whitelist_entries*7),
+            "<HHBBB{:d}sB{:d}s".format(
+                adv_data_length, num_whitelist_entries * 7),
             adv_interv_min, adv_interv_max,
             adv_type, own_addr_type,
             adv_data_length,
@@ -1527,7 +1553,7 @@ class BlueNRG_MS(BaseHCI):
             self, conn_handle=0, num_handles=0, set_of_handles=b''):
         """aci_gatt_read_multiple_charac_val"""
         data = ustruct.pack(
-            "<HB{:d}s".format(num_handles*2),
+            "<HB{:d}s".format(num_handles * 2),
             conn_handle, num_handles, set_of_handles)
         hci_cmd = HCI_COMMAND(
             ogf=OGF_VENDOR_CMD,
