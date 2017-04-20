@@ -41,43 +41,6 @@ from bluetooth_low_energy.protocols.hci.cmd import (
     OGF_STATUS_PARAM,
     HCI_COMMAND)
 
-
-# # IncorrectPacketType Exception
-# class IncorrectPacketType(Exception):
-#     """IncorrectPacketType"""
-#     def __init__(self, message):
-#         super(IncorrectPacketType, self).__init__(message)
-
-# # WrongPacketLength Exception
-# class WrongPacketLength(Exception):
-#     """WrongPacketLength"""
-#     def __init__(self, message):
-#         super(WrongPacketLength, self).__init__(message)
-
-# # Write Exception
-# class WriteException(Exception):
-#     """WriteException"""
-#     def __init__(self, message):
-#         super(WriteException, self).__init__(message)
-
-# # Read Exception
-# class ReadException(Exception):
-#     """ReadException"""
-#     def __init__(self, message):
-#         super(ReadException, self).__init__(message)
-
-# # MaxRetryException Exception
-# class MaxRetryException(Exception):
-#     """MaxRetryException"""
-#     def __init__(self, message):
-#         super(MaxRetryException, self).__init__(message)
-
-# # Timeout Exception
-# class TimeoutException(Exception):
-#     """TimeoutException"""
-#     def __init__(self, message):
-#         super(TimeoutException, self).__init__(message)
-
 # Hardware Exception
 class HardwareException(Exception):
     """HardwareException"""
@@ -92,6 +55,10 @@ class BaseHCI(object):
     ###########################################################################
     #                         HCI Library Functions                           #
     ###########################################################################
+
+    def hci_send_cmd(self, cmd, is_async=False):
+        """ Abstract hci_send_cmd method """
+        raise NotImplementedError()
 
     def hci_reset(self):
         """hci_reset"""

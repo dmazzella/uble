@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
 import pyb
 import ustruct
-# import heapq
+from micropython import const, heap_lock, heap_unlock
+from ubinascii import hexlify, unhexlify
 
 from bluetooth_low_energy.modules.base_hci import (
     BaseHCI,
-    # IncorrectPacketType,
-    # WrongPacketLength,
-    # WriteException,
-    # ReadException,
-    # MaxRetryException,
-    HardwareException,
-    # TimeoutException
+    HardwareException
 )
 from bluetooth_low_energy.protocols.hci import (
     HCI_COMMAND_PKT,
@@ -151,8 +146,6 @@ from bluetooth_low_energy.protocols.hci.vendor_specifics.st_microelectronics.blu
 from bluetooth_low_energy.protocols.hci.vendor_specifics.st_microelectronics.bluenrg_ms.event import (
     HCI_VENDOR_EVENTS as ST_HCI_VENDOR_EVENTS
 )
-from micropython import const, heap_lock, heap_unlock
-from ubinascii import hexlify, unhexlify
 
 # Add ST Microelectronics Vendor Specific HCI_COMMANDS
 HCI_COMMANDS[OGF_VENDOR_CMD] = HCI_VENDOR_COMMANDS
@@ -161,19 +154,6 @@ HCI_VENDOR_EVENTS.update(ST_HCI_VENDOR_EVENTS)
 
 HCI_PCK_TYPE_OFFSET = const(0)
 EVENT_PARAMETER_TOT_LEN_OFFSET = const(2)
-
-# class IRQHandler(object):
-#     """IRQHandler"""
-
-#     def __init__(self, hci_isr):
-#         self._hci_isr = hci_isr
-
-#     def callback(self, irqno):
-#         """callback"""
-#         heap_unlock()
-#         self._hci_isr()
-#         heap_lock()
-
 
 class CSContext(object):
     def __init__(self, pin):
@@ -239,9 +219,6 @@ class BlueNRG_MS(BaseHCI):
         if not all([isinstance(pin, (pyb.Pin, type(None))) for pin in o_pins]):
             raise TypeError("")
 
-        # queue contains verified hci packets
-        # self._hci_read_pkt_queue = []
-
         self._spi_bus = spi_bus
 
         self._nss_pin = nss_pin
@@ -253,17 +230,6 @@ class BlueNRG_MS(BaseHCI):
 
         self._vin_pin = vin_pin
         self._rst_pin = rst_pin
-
-        # self._irq_handler = irq_handler
-        # if not self._irq_handler:
-        #     self._irq_handler = IRQHandler(self.hci_isr)
-
-        # self._irq_ext_int = pyb.ExtInt(
-        #     self._irq_pin,
-        #     pyb.ExtInt.IRQ_RISING,
-        #     pyb.Pin.PULL_DOWN,
-        #     getattr(self._irq_handler, 'callback')
-        # )
 
         # Release CS line
         self._nss_pin.high()
@@ -297,16 +263,6 @@ class BlueNRG_MS(BaseHCI):
         """any"""
         return bool(self._irq_pin.value())
 
-    def disable_spi_irq(self):
-        """disable_spi_irq"""
-        # self._irq_ext_int.disable()
-        pass
-
-    def enable_spi_irq(self):
-        """enable_spi_irq"""
-        # self._irq_ext_int.enable()
-        pass
-
     def set_spi_irq_as_output(self):
         """Pull IRQ high"""
         self._irq_pin.init(pyb.Pin.OUT_PP, pull=pyb.Pin.PULL_NONE, value=1)
@@ -317,12 +273,10 @@ class BlueNRG_MS(BaseHCI):
 
     def hw_bootloader(self):
         """hw_bootloader"""
-        self.disable_spi_irq()
         self.set_spi_irq_as_output()
         self.reset()
         pyb.delay(4)
         self.set_spi_irq_as_input()
-        self.enable_spi_irq()
 
     def run(self, callback=None, callback_time=1000):
         """
@@ -445,35 +399,13 @@ class BlueNRG_MS(BaseHCI):
             return False
 
         if hci_pckt[HCI_PCK_TYPE_OFFSET] != HCI_EVENT_PKT:
-            # raise IncorrectPacketType('')
             return False
 
         if hci_pckt[EVENT_PARAMETER_TOT_LEN_OFFSET] != \
                 len(hci_pckt) - (1 + HCI_EVENT_HDR_SIZE):
-            # raise WrongPacketLength("packet truncated or too long")
             return False
 
         return True
-
-    # def hci_isr(self, run_one=False, retry=5):
-    #     """
-    #     Iterrupt service routine that must be called when the BlueNRG-MS
-    #     reports a packet received or an event to the host through the
-    #     BlueNRG-MS interrupt line.
-    #     """
-    #     while self.any() or run_one:
-    #         event = self.read(retry=retry)
-    #         if self.hci_verify(event):
-    #             _micros, _event = pyb.micros(), bytes(event)
-    #             heapq.heappush(self._hci_read_pkt_queue, (_micros, _event))
-    #         if run_one:
-    #             break
-
-    # def get_event(self):
-    #     """get_event"""
-    #     if len(self._hci_read_pkt_queue):
-    #         _micros, _event = heapq.heappop(self._hci_read_pkt_queue)
-    #         return _event
 
     def hci_wait_event(self, evtcode=0, subevtcode=0, timeout=1000, retry=5):
         """
