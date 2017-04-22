@@ -182,7 +182,6 @@ class BlueNRG_MS(BaseHCI):
         vin_pin=pyb.Pin('X8', pyb.Pin.OUT_PP),
         rst_pin=pyb.Pin('X9', pyb.Pin.OUT_PP),
         irq_pin=pyb.Pin('Y3', pyb.Pin.IN, pyb.Pin.PULL_DOWN),
-        irq_handler=None,
         power_on=True
     ):
         """
@@ -360,8 +359,8 @@ class BlueNRG_MS(BaseHCI):
                 rx_write_bytes = header_slave[1]
                 rx_read_bytes = (header_slave[4] << 8) | header_slave[3]
                 if header_slave[0] == 0x02 and (
-                    rx_write_bytes > 0 or rx_read_bytes > 0
-                ):
+                        rx_write_bytes > 0 or rx_read_bytes > 0
+                    ):
                     # SPI is ready
                     if header:
                         # avoid to write more data that size of the buffer
