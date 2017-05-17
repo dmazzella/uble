@@ -106,6 +106,12 @@ class FirmwareUpdate(SPBTLE_RF):
         # Reset BlueNRG-MS
         self.reset()
 
+        # Check Evt_Blue_Initialized
+        if self.hci_wait_event(
+                subevtcode=EVT_BLUE_HAL_INITIALIZED
+            ).struct.reason_code not in (RESET_NORMAL, RESET_UPDATER_BAD_FLAG):
+            raise ValueError("reason_code")
+
         # Get the BlueNRG FW versions
         version = self.get_version()
         log.info("current version %s", version)
