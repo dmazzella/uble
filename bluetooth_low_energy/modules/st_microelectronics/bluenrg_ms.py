@@ -161,10 +161,10 @@ class CSContext(object):
         self._pin = pin
     def __enter__(self):
         # Assert CS line
-        self._pin.low()
+        self._pin.off()
     def __exit__(self, exc_type, exc_value, traceback):
         # Release CS line
-        self._pin.high()
+        self._pin.on()
         return all(map(lambda x: x is None, [exc_type, exc_value, traceback]))
 
 class BlueNRG_MS(BaseHCI):
@@ -220,7 +220,7 @@ class BlueNRG_MS(BaseHCI):
         self._rst_pin = rst_pin
 
         # Release CS line
-        self._nss_pin.high()
+        self._nss_pin.on()
 
         # POWER ON
         if power_on:
@@ -230,21 +230,21 @@ class BlueNRG_MS(BaseHCI):
         """
         Power ON BlueNRG-MS module
         """
-        self._vin_pin.low()
+        self._vin_pin.off()
 
     def power_off(self):
         """
         Power OFF BlueNRG-MS module
         """
-        self._vin_pin.high()
+        self._vin_pin.on()
 
     def reset(self):
         """
         Reset BlueNRG-MS module
         """
-        self._rst_pin.low()
+        self._rst_pin.off()
         utime.sleep_us(5)
-        self._rst_pin.high()
+        self._rst_pin.on()
         utime.sleep_us(5)
 
     def any(self):
@@ -253,11 +253,11 @@ class BlueNRG_MS(BaseHCI):
 
     def set_spi_irq_as_output(self):
         """Pull IRQ high"""
-        self._irq_pin.init(machine.Pin.OUT_PP, pull=machine.Pin.PULL_NONE, value=1)
+        self._irq_pin.init(mode=machine.Pin.OUT_PP, pull=machine.Pin.PULL_NONE, value=1)
 
     def set_spi_irq_as_input(self):
         """IRQ input"""
-        self._irq_pin.init(machine.Pin.IN, pull=machine.Pin.PULL_DOWN)
+        self._irq_pin.init(mode=machine.Pin.IN, pull=machine.Pin.PULL_DOWN)
 
     def hw_bootloader(self):
         """hw_bootloader"""
