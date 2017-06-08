@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-import pyb
+import machine
+import utime
 import ustruct
 from micropython import const, heap_lock, heap_unlock
 from ubinascii import hexlify, unhexlify
@@ -174,14 +175,11 @@ class BlueNRG_MS(BaseHCI):
 
     def __init__(
         self,
-        spi_bus=pyb.SPI(2, pyb.SPI.MASTER, baudrate=8000000, polarity=0),
-        nss_pin=pyb.Pin('Y5', pyb.Pin.OUT_PP),
-        sck_pin=None,
-        miso_pin=None,
-        mosi_pin=None,
-        vin_pin=pyb.Pin('X8', pyb.Pin.OUT_PP),
-        rst_pin=pyb.Pin('X9', pyb.Pin.OUT_PP),
-        irq_pin=pyb.Pin('Y3', pyb.Pin.IN, pyb.Pin.PULL_DOWN),
+        spi_bus=machine.SPI(2, baudrate=8000000, polarity=0),
+        nss_pin=machine.Pin('Y5', machine.Pin.OUT_PP),
+        vin_pin=machine.Pin('X8', machine.Pin.OUT_PP),
+        rst_pin=machine.Pin('X9', machine.Pin.OUT_PP),
+        irq_pin=machine.Pin('Y3', machine.Pin.IN, machine.Pin.PULL_DOWN),
         power_on=True
     ):
         """
@@ -207,26 +205,17 @@ class BlueNRG_MS(BaseHCI):
             - IRQ  on Y3 Pin
         """
 
-        if not isinstance(spi_bus, pyb.SPI):
+        if not isinstance(spi_bus, machine.SPI):
             raise TypeError("")
 
         m_pins = (nss_pin, irq_pin, vin_pin, rst_pin)
-        if not all([isinstance(pin, pyb.Pin) for pin in m_pins]):
-            raise TypeError("")
-
-        o_pins = (sck_pin, miso_pin, mosi_pin)
-        if not all([isinstance(pin, (pyb.Pin, type(None))) for pin in o_pins]):
+        if not all([isinstance(pin, machine.Pin) for pin in m_pins]):
             raise TypeError("")
 
         self._spi_bus = spi_bus
 
         self._nss_pin = nss_pin
-        self._sck_pin = sck_pin
-        self._miso_pin = miso_pin
-        self._mosi_pin = mosi_pin
-
         self._irq_pin = irq_pin
-
         self._vin_pin = vin_pin
         self._rst_pin = rst_pin
 
@@ -254,9 +243,9 @@ class BlueNRG_MS(BaseHCI):
         Reset BlueNRG-MS module
         """
         self._rst_pin.low()
-        pyb.udelay(5)
+        utime.sleep_us(5)
         self._rst_pin.high()
-        pyb.udelay(5)
+        utime.sleep_us(5)
 
     def any(self):
         """any"""
@@ -264,17 +253,17 @@ class BlueNRG_MS(BaseHCI):
 
     def set_spi_irq_as_output(self):
         """Pull IRQ high"""
-        self._irq_pin.init(pyb.Pin.OUT_PP, pull=pyb.Pin.PULL_NONE, value=1)
+        self._irq_pin.init(machine.Pin.OUT_PP, pull=machine.Pin.PULL_NONE, value=1)
 
     def set_spi_irq_as_input(self):
         """IRQ input"""
-        self._irq_pin.init(pyb.Pin.IN, pull=pyb.Pin.PULL_DOWN)
+        self._irq_pin.init(machine.Pin.IN, pull=machine.Pin.PULL_DOWN)
 
     def hw_bootloader(self):
         """hw_bootloader"""
         self.set_spi_irq_as_output()
         self.reset()
-        pyb.delay(4)
+        utime.sleep_ms(4)
         self.set_spi_irq_as_input()
 
     def run(self, callback=None, callback_time=1000):
@@ -289,15 +278,15 @@ class BlueNRG_MS(BaseHCI):
         """
         try:
             self.__start__()
-            start = pyb.millis()
+            start = utime.ticks_ms()
             while True:
                 event = self.read(retry=5)
                 if self.hci_verify(event):
                     self.__process__(event)
                 # user defined periodic callback
-                if callable(callback) and pyb.elapsed_millis(start) >= callback_time:
+                if callable(callback) and utime.ticks_diff(utime.ticks_ms(), start) >= callback_time:
                     callback()
-                    start = pyb.millis()
+                    start = utime.ticks_ms()
 
         except (KeyboardInterrupt, StopIteration) as ex:
             raise ex
@@ -325,7 +314,7 @@ class BlueNRG_MS(BaseHCI):
         header_slave = bytearray(len(header_master))
         while retry:
             with CSContext(self._nss_pin):
-                self._spi_bus.send_recv(header_master, header_slave)
+                self._spi_bus.write_readinto(header_master, header_slave)
                 rx_read_bytes = (header_slave[4] << 8) | header_slave[3]
                 if header_slave[0] == 0x02 and rx_read_bytes > 0:
                     # SPI is ready
@@ -334,15 +323,15 @@ class BlueNRG_MS(BaseHCI):
                         rx_read_bytes = size
                     data = b'\xFF' * rx_read_bytes
                     result = bytearray(rx_read_bytes)
-                    self._spi_bus.send_recv(data, result)
+                    self._spi_bus.write_readinto(data, result)
                     break
                 else:
-                    pyb.udelay(150)
+                    utime.sleep_us(150)
             retry -= 1
 
         # Add a small delay to give time to the BlueNRG to set the IRQ pin low
         # to avoid a useless SPI read at the end of the transaction
-        pyb.udelay(150)
+        utime.sleep_us(150)
         return result
 
     def write(self, header, param, retry=5):
@@ -355,7 +344,7 @@ class BlueNRG_MS(BaseHCI):
         header_slave = bytearray(len(header_master))
         while retry:
             with CSContext(self._nss_pin):
-                self._spi_bus.send_recv(header_master, header_slave)
+                self._spi_bus.write_readinto(header_master, header_slave)
                 rx_write_bytes = header_slave[1]
                 rx_read_bytes = (header_slave[4] << 8) | header_slave[3]
                 if header_slave[0] == 0x02 and (
@@ -366,7 +355,7 @@ class BlueNRG_MS(BaseHCI):
                         # avoid to write more data that size of the buffer
                         if rx_write_bytes >= len(header):
                             result = bytearray(len(header))
-                            self._spi_bus.send_recv(header, result)
+                            self._spi_bus.write_readinto(header, result)
                             if param:
                                 rx_write_bytes -= len(header)
                                 # avoid to read more data that size of the buffer
@@ -375,7 +364,7 @@ class BlueNRG_MS(BaseHCI):
                                 else:
                                     tx_bytes = len(param)
                                 result = bytearray(tx_bytes)
-                                self._spi_bus.send_recv(param, result)
+                                self._spi_bus.write_readinto(param, result)
                                 break
                             else:
                                 break
@@ -384,7 +373,7 @@ class BlueNRG_MS(BaseHCI):
                     else:
                         break
                 else:
-                    pyb.udelay(150)
+                    utime.sleep_us(150)
             retry -= 1
 
         return result
@@ -411,8 +400,8 @@ class BlueNRG_MS(BaseHCI):
         Wait for event and filter it if needed
         """
         # Maximum timeout is 1 seconds
-        start = pyb.millis()
-        while pyb.elapsed_millis(start) <= min(timeout, 1000):
+        start = utime.ticks_ms()
+        while utime.ticks_diff(utime.ticks_ms(), start) <= min(timeout, 1000):
             event = self.read(retry=retry)
             if self.hci_verify(event) and isinstance(event, (bytearray, bytes)):
                 hci_uart = HCI_UART.from_buffer(event)
@@ -450,8 +439,8 @@ class BlueNRG_MS(BaseHCI):
             return
 
         # Maximum timeout is 1 seconds
-        start = pyb.millis()
-        while pyb.elapsed_millis(start) <= min(timeout, 1000):
+        start = utime.ticks_ms()
+        while utime.ticks_diff(utime.ticks_ms(), start) <= min(timeout, 1000):
             event = self.read(retry=retry)
             if self.hci_verify(event) and isinstance(event, (bytearray, bytes)):
                 hci_uart = HCI_UART.from_buffer(event)

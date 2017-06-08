@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import pyb
-
 from bluetooth_low_energy.modules.st_microelectronics.bluenrg_ms import (
     BlueNRG_MS)
 
