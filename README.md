@@ -112,6 +112,7 @@ Examples
 
         basic: print BlueNRG FW versions
         bluest_protocol: implements the BlueST protocol usable for test with 'ST BlueMS' app
+        eddystone: implement an Eddystone Beacon device
         sensor_demo: usable for test with 'BlueNRG' app
         firmware_update: update SPBTLE-RF firmware (see README)
         

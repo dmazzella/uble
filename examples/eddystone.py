@@ -53,7 +53,7 @@ CONN_L2 = CONN_L(5)
 EDDYSTONE_UID_BEACON_TYPE = const(0x01)
 EDDYSTONE_URL_BEACON_TYPE = const(0x02)
 
-EDDYSTONE_BEACON_TYPE = EDDYSTONE_URL_BEACON_TYPE
+EDDYSTONE_BEACON_TYPE = EDDYSTONE_UID_BEACON_TYPE
 
 ADVERTISING_INTERVAL_IN_MS = const(1000)
 CALIBRATED_TX_POWER_AT_0_M = const(22)
@@ -214,7 +214,123 @@ class Eddystone(SPBTLE_RF):
 
     def eddystone_uid_start(self):
         """ This function initializes the Eddystone UID Bluetooth services """
-        pass
+        eddystone_uid = {
+            "advertising_interval": ADVERTISING_INTERVAL_IN_MS,
+            "calibrated_tx_power": CALIBRATED_TX_POWER_AT_0_M,
+            "namespace_id": NAMESPACE_ID,
+            "beacon_id": BEACON_ID,
+        }
+
+        # disable scan response
+        result = self.hci_le_set_scan_resp_data(
+            length=st_constant.MAX_ADV_DATA_LEN,
+            data=b'\x00'*st_constant.MAX_ADV_DATA_LEN).response_struct
+        if result.status != status.BLE_STATUS_SUCCESS:
+            raise ValueError("hci_le_set_scan_resp_data status: {:02x}".format(
+                result.status))
+        log.debug("hci_le_set_scan_resp_data %02x", result.status)
+
+        advertising_interval = \
+            int(eddystone_uid["advertising_interval"] * ADVERTISING_INTERVAL_INCREMENT / 10)
+
+        # General Discoverable Mode
+        result = self.aci_gap_set_discoverable(
+            adv_type=st_constant.ADV_IND,
+            adv_interv_min=advertising_interval,
+            adv_interv_max=advertising_interval,
+            own_addr_type=st_constant.PUBLIC_ADDR,
+            adv_filter_policy=st_constant.NO_WHITE_LIST_USE,
+            local_name_len=0,
+            local_name=b'',
+            service_uuid_len=0,
+            service_uuid_list=b'',
+            slave_conn_interv_min=0,
+            slave_conn_interv_max=0).response_struct
+        if result.status != status.BLE_STATUS_SUCCESS:
+            raise ValueError("aci_gap_set_discoverable status: {:02x}".format(
+                result.status))
+        log.debug("aci_gap_set_discoverable %02x", result.status)
+
+        # Remove the TX power level advertisement (this is done to decrease the packet size).
+        result = self.aci_gap_delete_ad_type(
+            ad_type=st_constant.AD_TYPE_TX_POWER_LEVEL
+        ).response_struct
+        if result.status != status.BLE_STATUS_SUCCESS:
+            raise ValueError("aci_gap_delete_ad_type status: {:02x}".format(
+                result.status))
+        log.debug("aci_gap_delete_ad_type %02x", result.status)
+
+        service_data = [
+            # Length.
+            23,
+            # Service Data data type value.
+            st_constant.AD_TYPE_SERVICE_DATA,
+            # 16-bit Eddystone UUID.
+            0xAA, 0xFE,
+            # UID frame type.
+            0x00,
+            # Ranging data.
+            eddystone_uid["calibrated_tx_power"],
+        ] + [
+            # 10-byte ID Namespace.
+            x for x in eddystone_uid["namespace_id"]
+        ] + [
+            # 6-byte ID Instance.
+            x for x in eddystone_uid["beacon_id"]
+        ] + [
+            # Reserved.
+            0x00,
+            # Reserved.
+            0x00
+        ]
+
+        service_uuid_list = [
+            # Length.
+            3,
+            # Complete list of 16-bit Service UUIDs data type value.
+            st_constant.AD_TYPE_16_BIT_SERV_UUID_CMPLT_LIST,
+            # 16-bit Eddystone UUID.
+            0xAA, 0xFE
+        ]
+
+        flags = [
+            # Length
+            2,
+            # Flags data type value.
+            st_constant.AD_TYPE_FLAGS,
+            # BLE general discoverable, without BR/EDR support.
+            (st_constant.FLAG_BIT_LE_GENERAL_DISCOVERABLE_MODE | st_constant.FLAG_BIT_BR_EDR_NOT_SUPPORTED)
+        ]
+
+        # Update the service data.
+        service_data_bytes = bytes(service_data)
+        result = self.aci_gap_update_adv_data(
+            adv_len=len(service_data_bytes),
+            adv_data=service_data_bytes).response_struct
+        if result.status != status.BLE_STATUS_SUCCESS:
+            raise ValueError("aci_gap_update_adv_data status: {:02x}".format(
+                result.status))
+        log.debug("aci_gap_update_adv_data %02x", result.status)
+
+        # Update the service UUID list.
+        service_uuid_list_bytes = bytes(service_uuid_list)
+        result = self.aci_gap_update_adv_data(
+            adv_len=len(service_uuid_list_bytes),
+            adv_data=service_uuid_list_bytes).response_struct
+        if result.status != status.BLE_STATUS_SUCCESS:
+            raise ValueError("aci_gap_update_adv_data status: {:02x}".format(
+                result.status))
+        log.debug("aci_gap_update_adv_data %02x", result.status)
+
+        # Update the adverstising flags.
+        flags_bytes = bytes(flags)
+        result = self.aci_gap_update_adv_data(
+            adv_len=len(flags_bytes),
+            adv_data=flags_bytes).response_struct
+        if result.status != status.BLE_STATUS_SUCCESS:
+            raise ValueError("aci_gap_update_adv_data status: {:02x}".format(
+                result.status))
+        log.debug("aci_gap_update_adv_data %02x", result.status)
 
     def eddystone_url_start(self):
         """ This function inizializes the Eddystone URL Bluetooth services """
@@ -223,7 +339,6 @@ class Eddystone(SPBTLE_RF):
             "calibrated_tx_power": CALIBRATED_TX_POWER_AT_0_M,
             "url_scheme": URL_PREFIX,
             "url": PHYSICAL_WEB_URL,
-            "url_length": len(PHYSICAL_WEB_URL)
         }
 
         # disable scan response
@@ -266,14 +381,21 @@ class Eddystone(SPBTLE_RF):
         log.debug("aci_gap_delete_ad_type %02x", result.status)
 
         service_data = [
-            6 + eddystone_url["url_length"], # Length.
-            st_constant.AD_TYPE_SERVICE_DATA, #Service Data data type value.
-            0xAA, 0xFE, # 16-bit Eddystone UUID.
-            0x10, # URL frame type.
-            eddystone_url["calibrated_tx_power"], # Ranging data.
-            eddystone_url["url_scheme"], # URL Scheme Prefix is http://www.
+            # Length.
+            6 + len(eddystone_url["url"]),
+            #Service Data data type value.
+            st_constant.AD_TYPE_SERVICE_DATA,
+            # 16-bit Eddystone UUID.
+            0xAA, 0xFE,
+            # URL frame type.
+            0x10,
+            # Ranging data.
+            eddystone_url["calibrated_tx_power"],
+            # URL Scheme Prefix is http://www.
+            eddystone_url["url_scheme"],
         ] + [
-            x for x in eddystone_url["url"] # Url
+            # Url
+            x for x in eddystone_url["url"]
         ]
 
         service_uuid_list = [
