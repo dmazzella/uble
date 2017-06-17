@@ -62,7 +62,7 @@ Currently supported module STMicroelectronics [SPBTLE-RF](http://www.st.com/en/w
 
 From STMicroelectronics [X-NUCLEO-IDB05A1](http://www.st.com/en/ecosystems/x-nucleo-idb05a1.html):
 
-<img src="https://raw.githubusercontent.com/dmazzella/uble/master/hardware/MicroPython_SPBTLERF_Breakout_v01/X_Nucleo_IDB05A1_mbed_pinout_v1.jpg" width="80%" height="80%" alt="X_Nucleo_IDB05A1_mbed_pinout_v1"/>
+<img src="https://raw.githubusercontent.com/dmazzella/uble/master/hardware/X_Nucleo_IDB05A1/X_Nucleo_IDB05A1_mbed_pinout_v1.jpg" width="80%" height="80%" alt="X_Nucleo_IDB05A1_mbed_pinout_v1"/>
 
 or
 
