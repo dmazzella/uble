@@ -55,7 +55,7 @@ User manual [BlueNRG-MS Bluetooth® LE stack application command interface](http
 Programming manual [BlueNRG, BlueNRG-MS stacks programming guidelines](http://www.st.com/resource/en/programming_manual/dm00141271.pdf)
 
 
-Hardware
+ Hardware
 ---------------------
 
 Currently supported module STMicroelectronics [SPBTLE-RF](http://www.st.com/en/wireless-connectivity/spbtle-rf.html) 
@@ -110,10 +110,10 @@ Navigate to the folder containing the repository [micropython](https://github.co
 Examples
 ---------------------
 
-        basic: print BlueNRG FW versions
-        bluest_protocol: implements the BlueST protocol usable for test with 'ST BlueMS' app
-        eddystone: implement an Eddystone Beacon device
-        sensor_demo: usable for test with 'BlueNRG' app
-        firmware_update: update SPBTLE-RF firmware (see README)
-        api_eddystone: implement an Eddystone Beacon device using high level api
-        api_sensor_demo: usable for test with 'BlueNRG' app using high level api
+- [basic.py](https://github.com/dmazzella/uble/blob/master/examples/basic.py): print BlueNRG FW versions
+- [bluest_protocol.py](https://github.com/dmazzella/uble/blob/master/examples/bluest_protocol.py): implements the BlueST protocol usable for test with 'ST BlueMS' app
+- [eddystone.py](https://github.com/dmazzella/uble/blob/master/examples/eddystone.py): implement an Eddystone Beacon device
+- [sensor_demo.py](https://github.com/dmazzella/uble/blob/master/examples/sensor_demo.py): usable for test with 'BlueNRG' app
+- [firmware_update.py](https://github.com/dmazzella/uble/blob/master/examples/firmware_update/firmware_update.py): update SPBTLE-RF firmware (see [README](https://github.com/dmazzella/uble/blob/master/examples/firmware_update/README.txt))
+- [api_eddystone.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_eddystone.py): implement an Eddystone Beacon device using high level api
+- [api_sensor_demo.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_sensor_demo.py): usable for test with 'BlueNRG' app using high level api
