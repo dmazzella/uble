@@ -56,7 +56,7 @@ class BaseHCI(object):
     #                         HCI Library Functions                           #
     ###########################################################################
 
-    def hci_send_cmd(self, cmd, is_async=False):
+    def hci_send_cmd(self, cmd, is_async=False, timeout=1000, retry=5):
         """ Abstract hci_send_cmd method """
         raise NotImplementedError()
 
