@@ -115,4 +115,5 @@ Examples
         eddystone: implement an Eddystone Beacon device
         sensor_demo: usable for test with 'BlueNRG' app
         firmware_update: update SPBTLE-RF firmware (see README)
-        
+        api_eddystone: implement an Eddystone Beacon device using high level api
+        api_sensor_demo: usable for test with 'BlueNRG' app using high level api
