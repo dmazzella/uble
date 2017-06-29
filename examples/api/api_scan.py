@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
-import ustruct
-from micropython import const
-from binascii import hexlify, unhexlify
+from binascii import hexlify
 from bluetooth_low_energy.api.scanner import Scanner
-from bluetooth_low_energy.api.scan_entry import ScanEntry
-from bluetooth_low_energy.api.constants import *
 
 def main(timeout=5000):
 
