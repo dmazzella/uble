@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from bluetooth_low_energy.api.util import format_advertisement
 
 
 class ScanEntry(object):
@@ -9,3 +10,7 @@ class ScanEntry(object):
         self.address_type = address_type
         self.rssi = rssi
         self.data = data
+
+    def get_data(self):
+        """ return formatted advertisement data"""
+        return format_advertisement(self.data)
