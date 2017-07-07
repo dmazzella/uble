@@ -43,7 +43,24 @@ Usage
         b'\x18 \x00'
         >>>
 
-- Control BLE chips see 'examples'
+- Control BLE chips
+
+Examples
+---------------------
+
+With low level api:
+
+- [basic.py](https://github.com/dmazzella/uble/blob/master/examples/basic.py): print BlueNRG FW versions
+- [bluest_protocol.py](https://github.com/dmazzella/uble/blob/master/examples/bluest_protocol.py): implements the BlueST protocol usable for test with 'ST BlueMS' app
+- [eddystone.py](https://github.com/dmazzella/uble/blob/master/examples/eddystone.py): implement an Eddystone Beacon device
+- [sensor_demo.py](https://github.com/dmazzella/uble/blob/master/examples/sensor_demo.py): usable for test with 'BlueNRG' app
+- [firmware_update.py](https://github.com/dmazzella/uble/blob/master/examples/firmware_update/firmware_update.py): update SPBTLE-RF firmware (see [README](https://github.com/dmazzella/uble/blob/master/examples/firmware_update/README.txt))
+
+With high level api:
+
+- [api_eddystone.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_eddystone.py): implement an Eddystone Beacon device
+- [api_sensor_demo.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_sensor_demo.py): usable for test with 'BlueNRG' app
+- [api_scan.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_scan.py): implement a Scanner object used to scan for LE devices which are broadcasting advertising data 
 
 Software
 ---------------------
@@ -106,20 +123,3 @@ Navigate to the folder containing the repository [micropython](https://github.co
         $ cd stmhal
         $ make FROZEN_MPY_DIR="~/uble/micropython-lib"
 
-
-Examples
----------------------
-
-With low level api:
-
-- [basic.py](https://github.com/dmazzella/uble/blob/master/examples/basic.py): print BlueNRG FW versions
-- [bluest_protocol.py](https://github.com/dmazzella/uble/blob/master/examples/bluest_protocol.py): implements the BlueST protocol usable for test with 'ST BlueMS' app
-- [eddystone.py](https://github.com/dmazzella/uble/blob/master/examples/eddystone.py): implement an Eddystone Beacon device
-- [sensor_demo.py](https://github.com/dmazzella/uble/blob/master/examples/sensor_demo.py): usable for test with 'BlueNRG' app
-- [firmware_update.py](https://github.com/dmazzella/uble/blob/master/examples/firmware_update/firmware_update.py): update SPBTLE-RF firmware (see [README](https://github.com/dmazzella/uble/blob/master/examples/firmware_update/README.txt))
-
-With high level api:
-
-- [api_eddystone.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_eddystone.py): implement an Eddystone Beacon device
-- [api_sensor_demo.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_sensor_demo.py): usable for test with 'BlueNRG' app
-- [api_scan.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_scan.py): implement a Scanner object used to scan for LE devices which are broadcasting advertising data 
