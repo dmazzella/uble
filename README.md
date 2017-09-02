@@ -93,10 +93,10 @@ Availabe breakout board:
 </br>
 
 
-Fritzing for breakout: [MicroPython_SPBTLERF_Breakout_v01_mod.fzz](https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v01/MicroPython_SPBTLERF_Breakout_v01_mod.fzz)
+Fritzing for breakout: [MicroPython_SPBTLERF_Breakout_v03_mod.fzz](https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v03/MicroPython_SPBTLERF_Breakout_v03_mod.fzz)
 
 
-Gerber for breakout: [MicroPython_SPBTLERF_Breakout_v01_mod.zip](https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v01/MicroPython_SPBTLERF_Breakout_v01_mod.zip)
+Gerber for breakout: [MicroPython_SPBTLERF_Breakout_v03_mod.zip](https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v03/MicroPython_SPBTLERF_Breakout_v03_mod.zip)
 
 If have interest into preassembled breakout board contact me at damianomazzella@gmail.com
 
