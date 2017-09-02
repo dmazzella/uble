@@ -85,11 +85,8 @@ Availabe breakout board:
 <table>
   <tr>
     <th>
-        <img src="https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v01/MicroPython_SPBTLERF_Breakout_v01_mod_TOP.png" width="30%" height="30%" alt="MicroPython_SPBTLERF_Breakout_v01_mod_TOP"/>
-    <img src="https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v01/MicroPython_SPBTLERF_Breakout_v01_mod_BOTTOM.png" width="30%" height="30%" alt="MicroPython_SPBTLERF_Breakout_v01_mod_BOTTOM"/>
-    </th>
-    <th>
-    <a href="https://oshpark.com/shared_projects/ST79grRm"><img src="https://oshpark.com/assets/badge-5b7ec47045b78aef6eb9d83b3bac6b1920de805e9a0c227658eac6e19a045b9c.png" alt="Order from OSH Park"/></a>
+        <img src="https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v03/MicroPython_SPBTLERF_Breakout_v03_mod_TOP.png" width="30%" height="30%" alt="MicroPython_SPBTLERF_Breakout_v03_mod_TOP"/>
+    <img src="https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v03/MicroPython_SPBTLERF_Breakout_v03_mod_BOTTOM.png" width="30%" height="30%" alt="MicroPython_SPBTLERF_Breakout_v03_mod_BOTTOM"/>
     </th>
   </tr>
 </table>

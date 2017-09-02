@@ -176,11 +176,9 @@ class BlueNRG_MS(BaseHCI):
     def __init__(
         self,
         spi_bus=machine.SPI(2, baudrate=8000000, polarity=0),
-        nss_pin=machine.Pin('Y5', machine.Pin.OUT_PP),
-        vin_pin=machine.Pin('X8', machine.Pin.OUT_PP),
-        rst_pin=machine.Pin('X9', machine.Pin.OUT_PP),
         irq_pin=machine.Pin('Y3', machine.Pin.IN, machine.Pin.PULL_DOWN),
-        power_on=True
+        rst_pin=machine.Pin('Y4', machine.Pin.OUT_PP),
+        nss_pin=machine.Pin('Y5', machine.Pin.OUT_PP),
     ):
         """
         Defaults:
@@ -196,47 +194,29 @@ class BlueNRG_MS(BaseHCI):
                 crc:
                 crc_calc: SPI_CRCCALCULATION_DISABLED
 
+            - IRQ  on Y3 Pin
+            - RST  on Y4 Pin
             - NSS  on Y5 Pin
             - SCK  on Y6 Pin
             - MISO on Y7 Pin
             - MOSI on Y8 Pin
-            - VIN  on X8 Pin
-            - RST  on X9 Pin
-            - IRQ  on Y3 Pin
         """
 
         if not isinstance(spi_bus, machine.SPI):
             raise TypeError("")
 
-        m_pins = (nss_pin, irq_pin, vin_pin, rst_pin)
+        m_pins = (irq_pin, rst_pin, nss_pin)
         if not all([isinstance(pin, machine.Pin) for pin in m_pins]):
             raise TypeError("")
 
         self._spi_bus = spi_bus
 
-        self._nss_pin = nss_pin
         self._irq_pin = irq_pin
-        self._vin_pin = vin_pin
         self._rst_pin = rst_pin
+        self._nss_pin = nss_pin
 
         # Release CS line
         self._nss_pin.on()
-
-        # POWER ON
-        if power_on:
-            self.power_on()
-
-    def power_on(self):
-        """
-        Power ON BlueNRG-MS module
-        """
-        self._vin_pin.off()
-
-    def power_off(self):
-        """
-        Power OFF BlueNRG-MS module
-        """
-        self._vin_pin.on()
 
     def reset(self):
         """
