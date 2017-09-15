@@ -78,18 +78,10 @@ From STMicroelectronics [X-NUCLEO-IDB05A1](http://www.st.com/en/ecosystems/x-nuc
 
 <img src="https://raw.githubusercontent.com/dmazzella/uble/master/hardware/X_Nucleo_IDB05A1/X_Nucleo_IDB05A1_mbed_pinout_v1.jpg" width="80%" height="80%" alt="X_Nucleo_IDB05A1_mbed_pinout_v1"/>
 
-or
 
-Availabe breakout board:
+PyBoard breakout board:
 </br>
-<table>
-  <tr>
-    <th>
-        <img src="https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v03/MicroPython_SPBTLERF_Breakout_v03_mod_TOP.png" width="30%" height="30%" alt="MicroPython_SPBTLERF_Breakout_v03_mod_TOP"/>
-    <img src="https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v03/MicroPython_SPBTLERF_Breakout_v03_mod_BOTTOM.png" width="30%" height="30%" alt="MicroPython_SPBTLERF_Breakout_v03_mod_BOTTOM"/>
-    </th>
-  </tr>
-</table>
+<img src="https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v03/MicroPython_SPBTLERF_Breakout_v03_mod_TOP_and_BOTTOM.png" width="100%" height="100%" alt="MicroPython_SPBTLERF_Breakout_v03_mod_TOP_and_BOTTOM"/>
 </br>
 
 
