@@ -81,7 +81,7 @@ From STMicroelectronics [X-NUCLEO-IDB05A1](http://www.st.com/en/ecosystems/x-nuc
 
 PyBoard breakout board:
 </br>
-<img src="https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v03/MicroPython_SPBTLERF_Breakout_v03_mod_TOP_and_BOTTOM.png" width="100%" height="100%" alt="MicroPython_SPBTLERF_Breakout_v03_mod_TOP_and_BOTTOM"/>
+<img src="https://github.com/dmazzella/uble/raw/master/hardware/MicroPython_SPBTLERF_Breakout_v03/MicroPython_SPBTLERF_Breakout_v03_mod_TOP_and_BOTTOM.png" width="522px" height="331px" alt="MicroPython_SPBTLERF_Breakout_v03_mod_TOP_and_BOTTOM"/>
 </br>
 
 
