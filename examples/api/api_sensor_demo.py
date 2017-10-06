@@ -18,7 +18,7 @@ def main():
         """ write_characteristics """
         # Accelerator
         env_sens_peripheral.write_uuid(
-            UUID("1bc5d5a5020036ace1114bcf801b0a34"),
+            UUID("1bc5d5a5-0200-36ac-e1114bcf801b0a34"),
             ustruct.pack(
                 "<HHH",
                 (urandom.randint(-1000, 1000)),
@@ -27,26 +27,26 @@ def main():
         )
         # Free Fall
         env_sens_peripheral.write_uuid(
-            UUID("1bc5d5a50200fc8fe1114acfa0783ee2"),
+            UUID("1bc5d5a5-0200-fc8f-e1114acfa0783ee2"),
             ustruct.pack("<B", urandom.randint(0, 1))
         )
         # Temperature
         env_sens_peripheral.write_uuid(
-            UUID("1bc5d5a50200e3a9e21177e420552ea3"),
+            UUID("1bc5d5a5-0200-e3a9-e21177e420552ea3"),
             ustruct.pack("<H", int(urandom.randint(-50, 50)  * 10))
         )
         # Pressure
         env_sens_peripheral.write_uuid(
-            UUID("1bc5d5a502000b84e2118be480c420cd"),
+            UUID("1bc5d5a5-0200-0b84-e2118be480c420cd"),
             ustruct.pack("<H", (100000 + urandom.randint(0, 1000)//32767))
         )
         # Humidity
         env_sens_peripheral.write_uuid(
-            UUID("1bc5d5a5020073a0e2118ce4600bc501"),
+            UUID("1bc5d5a5-0200-73a0-e2118ce4600bc501"),
             ustruct.pack("<H", (450 + urandom.randint(0, 100)//32767))
         )
 
-    # notify_enabled = False
+    notify_enabled = False
     def event_handler_callback(event, handler=None, data=None):
         """ event callback """
         if event == EVT_GAP_CONNECTED:
@@ -56,22 +56,25 @@ def main():
             env_sens_peripheral.set_discoverable()
         elif event == EVT_GATTS_WRITE:
             print("EVT_GATTS_WRITE")
-            # nonlocal notify_enabled
-            # notify_enabled = (int(data[0]) == 1)
-            # uuid = env_sens_peripheral.uuid_from_handle(handler)
-            # if uuid is not None:
-            #     print("{:s}".format(uuid))
+            nonlocal notify_enabled
+            notify_enabled = (int(data[0]) == 1)
+            print("notify_enabled", notify_enabled)
+            uuid = env_sens_peripheral.uuid_from_handle(handler-1)
+            if uuid is not None:
+                print("{!s}".format(uuid))
         elif event == EVT_GATTS_READ_PERMIT_REQ:
             print("EVT_GATTS_READ_PERMIT_REQ")
-            write_characteristics()
+            uuid = env_sens_peripheral.uuid_from_handle(handler-1)
+            if uuid is not None:
+                print("{!s}".format(uuid))
+            #write_characteristics()
         elif event == EVT_GATTS_WRITE_PERMIT_REQ:
             print("EVT_GATTS_WRITE_PERMIT_REQ")
 
     def notify_callback():
         """ notify_callback """
-        # if notify_enabled:
-        write_characteristics()
-
+        if notify_enabled:
+            write_characteristics()
 
     ################ Environmental Sensing ################
 
@@ -86,7 +89,7 @@ def main():
 
     # Temperature characteristic
     temp_characteristic = Characteristic(
-        UUID('1bc5d5a50200e3a9e21177e420552ea3'),
+        UUID('1bc5d5a5-0200-e3a9-e21177e420552ea3'),
         char_value_len=2,
         props=PROP_NOTIFY | PROP_READ,
         perms=PERM_NONE,
@@ -107,7 +110,7 @@ def main():
 
     # Pressure characteristic
     press_characteristic = Characteristic(
-        UUID('1bc5d5a502000b84e2118be480c420cd'),
+        UUID('1bc5d5a5-0200-0b84-e2118be480c420cd'),
         char_value_len=2,
         props=PROP_NOTIFY | PROP_READ,
         perms=PERM_NONE,
@@ -128,7 +131,7 @@ def main():
 
     # Humidity characteristic
     humidity_characteristic = Characteristic(
-        UUID('1bc5d5a5020073a0e2118ce4600bc501'),
+        UUID('1bc5d5a5-0200-73a0-e2118ce4600bc501'),
         char_value_len=2,
         props=PROP_NOTIFY | PROP_READ,
         perms=PERM_NONE,
@@ -140,7 +143,7 @@ def main():
 
     # Environmental Sensing service
     env_sens_service = Service(
-        UUID('1bc5d5a50200d082e21177e4401a8242'),
+        UUID('1bc5d5a5-0200-d082-e21177e4401a8242'),
         service_type=SERVICE_PRIMARY,
         characteristics=[
             temp_characteristic,
@@ -155,7 +158,7 @@ def main():
 
     # Free fall characteristic
     free_fall_characteristic = Characteristic(
-        UUID('1bc5d5a50200fc8fe1114acfa0783ee2'),
+        UUID('1bc5d5a5-0200-fc8f-e1114acfa0783ee2'),
         char_value_len=1,
         props=PROP_NOTIFY | PROP_READ,
         perms=PERM_NONE,
@@ -163,7 +166,7 @@ def main():
     )
 
     accel_characteristic = Characteristic(
-        UUID('1bc5d5a5020036ace1114bcf801b0a34'),
+        UUID('1bc5d5a5-0200-36ac-e1114bcf801b0a34'),
         char_value_len=6,
         props=PROP_NOTIFY | PROP_READ,
         perms=PERM_NONE,
@@ -172,7 +175,7 @@ def main():
 
     # Accelerator Sensing service
     accel_sens_service = Service(
-        UUID('1bc5d5a50200b49ae1113acf806e3602'),
+        UUID('1bc5d5a5-0200-b49a-e1113acf806e3602'),
         service_type=SERVICE_PRIMARY,
         characteristics=[
             free_fall_characteristic,
@@ -192,7 +195,7 @@ def main():
         ]
     )
     env_sens_peripheral.set_event_handler(event_handler_callback)
-    env_sens_peripheral.run(callback=notify_callback, callback_time=1000)
+    env_sens_peripheral.run(callback=notify_callback, callback_time=5000)
 
 if __name__ == "__main__":
     main()
