@@ -52,7 +52,9 @@ class BlueSTProtocol(SPBTLE_RF):
         super(BlueSTProtocol, self).__init__(*args, **kwargs)
 
         self.rtc = pyb.RTC()
-        self.rtc.datetime((2017, 1, 1, 0, 0, 0, 0, 0))
+        self.rtc.init()
+        self.rtc.calibration(-129)
+        self.rtc.datetime((2017, 10, 6, 5, 16, 41, 0, 0))
 
         self.bdaddr = bytes(reversed([0x12, 0x34, 0x00, 0xE1, 0x80, 0x02]))
         self.name = b'PyBLE'
