@@ -24,6 +24,7 @@ class Peripheral(SPBTLE_RF):
         interval = kwargs.pop('interval', 0)
         data = kwargs.pop('data', None)
         services = kwargs.pop('services', [])
+        event_handler = kwargs.pop('event_handler', None)
         super(Peripheral, self).__init__(*args, **kwargs)
         address = address if isinstance(address, bytes) else unhexlify(address)
 
@@ -35,14 +36,17 @@ class Peripheral(SPBTLE_RF):
         self.data = data
         self.event_handler = None
         self.connection_handle = None
+        self.services = []
         self.service_handle = None
         self.dev_name_char_handle = None
         self.appearance_char_handle = None
 
-        self.services = []
         if services:
             for _service in services:
                 self.add_service(_service)
+
+        if event_handler:
+            self.set_event_handler(event_handler)
 
     def run(self, *args, **kwargs):
         super(Peripheral, self).run(*args, **kwargs)
@@ -223,31 +227,37 @@ class Peripheral(SPBTLE_RF):
                         write_status=False,
                         err_code=0,
                         att_val_len=hci_evt.struct.data_length,
-                        att_val=hci_evt.struct.data[
+                        att_val=hci_evt.struct.data_buffer[
                             :hci_evt.struct.data_length]
                     ).response_struct
                     if result.status != status.BLE_STATUS_SUCCESS:
+                        raise ValueError(
+                            "aci_gatt_write_response status: {:02x}".format(
+                                result.status))
+                    elif result.status == status.BLE_STATUS_SUCCESS:
                         if callable(self.event_handler):
                             self.event_handler(
                                 EVT_GATTS_WRITE_PERMIT_REQ,
                                 handler=hci_evt.struct.attr_handle,
-                                data=hci_evt.struct.data[
+                                data=hci_evt.struct.data_buffer[
                                     :hci_evt.struct.data_length]
                             )
                 elif hci_evt.subevtcode == st_event.EVT_BLUE_GATT_READ_PERMIT_REQ:
-                    if callable(self.event_handler):
-                        self.event_handler(
-                            EVT_GATTS_READ_PERMIT_REQ,
-                            handler=hci_evt.struct.attr_handle,
-                            data=None
-                        )
-                        if self.connection_handle is not None:
-                            result = self.aci_gatt_allow_read(
-                                conn_handle=self.connection_handle).response_struct
-                            if result.status != status.BLE_STATUS_SUCCESS:
-                                raise ValueError(
-                                    "aci_gatt_allow_read status: {:02x}".format(
-                                        result.status))
+                    if self.connection_handle is not None:
+                        result = self.aci_gatt_allow_read(
+                            conn_handle=self.connection_handle).response_struct
+                        if result.status != status.BLE_STATUS_SUCCESS:
+                            raise ValueError(
+                                "aci_gatt_allow_read status: {:02x}".format(
+                                    result.status))
+                        elif result.status == status.BLE_STATUS_SUCCESS:
+                            if callable(self.event_handler):
+                                self.event_handler(
+                                    EVT_GATTS_READ_PERMIT_REQ,
+                                    handler=hci_evt.struct.attr_handle,
+                                    data=None
+                                )
+
 
     def set_discoverable(self):
         """ set_discoverable """
@@ -360,13 +370,13 @@ class Peripheral(SPBTLE_RF):
     def uuid_from_handle(self, handle):
         """ uuid_from_handle """
         for _service in self.services:
-            if handle == (_service.handle + 1):
+            if handle == (_service.handle):
                 return _service.uuid
             for _characteristic in _service.get_characteristics():
-                if handle == (_characteristic.handle + 1):
+                if handle == (_characteristic.handle):
                     return _characteristic.uuid
                 for _descriptor in _characteristic.get_descriptors():
-                    if handle == (_descriptor.handle + 1):
+                    if handle == (_descriptor.handle):
                         return _characteristic.uuid
 
 

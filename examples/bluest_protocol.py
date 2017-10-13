@@ -482,13 +482,13 @@ class BlueSTProtocol(SPBTLE_RF):
                         write_status=False,
                         err_code=0,
                         att_val_len=hci_evt.struct.data_length,
-                        att_val=hci_evt.struct.data[:hci_evt.struct.data_length]
+                        att_val=hci_evt.struct.data_buffer[:hci_evt.struct.data_length]
                         ).response_struct
                     if result.status != status.BLE_STATUS_SUCCESS:
                         self.attribute_modified_cb(
                             hci_evt.struct.attr_handle,
                             hci_evt.struct.data_length,
-                            hci_evt.struct.data[:hci_evt.struct.data_length]
+                            hci_evt.struct.data_buffer[:hci_evt.struct.data_length]
                         )
                 elif hci_evt.subevtcode == st_event.EVT_BLUE_GATT_READ_PERMIT_REQ:
                     self.read_request_cb(hci_evt.struct.attr_handle)

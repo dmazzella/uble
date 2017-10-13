@@ -396,7 +396,7 @@ HCI_VENDOR_EVENTS = {
             "conn_handle": uctypes.UINT16 | 0,
             "attr_handle": uctypes.UINT16 | 2,
             "data_length": uctypes.UINT8 | 4,
-            "attribute_data_list": \
+            "data_buffer": \
                 (uctypes.ARRAY | 5, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-5)
         }
     ],
