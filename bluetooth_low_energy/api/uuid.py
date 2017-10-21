@@ -18,6 +18,7 @@ class UUID(object):
                     len(self.value)
                 )
             )
+        self.value = bytes(reversed(self.value))
         self.uuid_type = UUID_16_BIT if len(self.value) == 2 else UUID_128_BIT
 
     def __properties__(self):
@@ -27,7 +28,7 @@ class UUID(object):
         )
 
     def __str__(self):
-        value = hexlify(self.value)
+        value = hexlify(bytes(reversed(self.value)))
         return (
             b'-'.join(
                 [

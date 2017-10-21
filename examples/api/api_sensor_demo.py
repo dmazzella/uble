@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import ustruct
 import urandom
+import machine
 from binascii import hexlify, unhexlify
 
 from bluetooth_low_energy.api.characteristic import Characteristic
@@ -12,13 +13,22 @@ from bluetooth_low_energy.api.uuid import UUID
 
 
 def main():
-    """ Test Temperature device """
+    """ Test Sensor Demo """
+
+    acc_service_uuid = UUID('02366e80cf3a11e19ab40002a5d5c51b')
+    free_fall_char_uuid = UUID('e23e78a0cf4a11e18ffc0002a5d5c51b')
+    acc_char_uuid = UUID('340a1b80cf4b11e1ac360002a5d5c51b')
+
+    env_service_uuid = UUID('42821a40e47711e282d00002a5d5c51b')
+    temp_char_uuid = UUID('a32e5520e47711e2a9e30002a5d5c51b')
+    press_char_uuid = UUID('cd20c480e48b11e2840b0002a5d5c51b')
+    humidity_char_uuid = UUID('01c50b60e48c11e2a0730002a5d5c51b')
 
     def write_characteristics():
         """ write_characteristics """
         # Accelerator
         env_sens_peripheral.write_uuid(
-            UUID("1bc5d5a5020036ace1114bcf801b0a34"),
+            acc_char_uuid,
             ustruct.pack(
                 "<HHH",
                 (urandom.randint(-1000, 1000)),
@@ -27,22 +37,22 @@ def main():
         )
         # Free Fall
         env_sens_peripheral.write_uuid(
-            UUID("1bc5d5a50200fc8fe1114acfa0783ee2"),
+            env_service_uuid,
             ustruct.pack("<B", urandom.randint(0, 1))
         )
         # Temperature
         env_sens_peripheral.write_uuid(
-            UUID("1bc5d5a50200e3a9e21177e420552ea3"),
+            temp_char_uuid,
             ustruct.pack("<H", int(urandom.randint(-50, 50)  * 10))
         )
         # Pressure
         env_sens_peripheral.write_uuid(
-            UUID("1bc5d5a502000b84e2118be480c420cd"),
+            press_char_uuid,
             ustruct.pack("<H", (100000 + urandom.randint(0, 1000)//32767))
         )
         # Humidity
         env_sens_peripheral.write_uuid(
-            UUID("1bc5d5a5020073a0e2118ce4600bc501"),
+            humidity_char_uuid,
             ustruct.pack("<H", (450 + urandom.randint(0, 100)//32767))
         )
 
@@ -89,7 +99,7 @@ def main():
 
     # Temperature characteristic
     temp_characteristic = Characteristic(
-        UUID('1bc5d5a50200e3a9e21177e420552ea3'),
+        temp_char_uuid,
         char_value_len=2,
         props=PROP_NOTIFY | PROP_READ,
         perms=PERM_NONE,
@@ -110,7 +120,7 @@ def main():
 
     # Pressure characteristic
     press_characteristic = Characteristic(
-        UUID('1bc5d5a502000b84e2118be480c420cd'),
+        press_char_uuid,
         char_value_len=2,
         props=PROP_NOTIFY | PROP_READ,
         perms=PERM_NONE,
@@ -131,7 +141,7 @@ def main():
 
     # Humidity characteristic
     humidity_characteristic = Characteristic(
-        UUID('1bc5d5a5020073a0e2118ce4600bc501'),
+        humidity_char_uuid,
         char_value_len=2,
         props=PROP_NOTIFY | PROP_READ,
         perms=PERM_NONE,
@@ -143,7 +153,7 @@ def main():
 
     # Environmental Sensing service
     env_sens_service = Service(
-        UUID('1bc5d5a50200d082e21177e4401a8242'),
+        env_service_uuid,
         service_type=SERVICE_PRIMARY,
         characteristics=[
             temp_characteristic,
@@ -158,7 +168,7 @@ def main():
 
     # Free fall characteristic
     free_fall_characteristic = Characteristic(
-        UUID('1bc5d5a50200fc8fe1114acfa0783ee2'),
+        free_fall_char_uuid,
         char_value_len=1,
         props=PROP_NOTIFY | PROP_READ,
         perms=PERM_NONE,
@@ -166,7 +176,7 @@ def main():
     )
 
     accel_characteristic = Characteristic(
-        UUID('1bc5d5a5020036ace1114bcf801b0a34'),
+        acc_char_uuid,
         char_value_len=6,
         props=PROP_NOTIFY | PROP_READ,
         perms=PERM_NONE,
@@ -175,7 +185,7 @@ def main():
 
     # Accelerator Sensing service
     accel_sens_service = Service(
-        UUID('1bc5d5a50200b49ae1113acf806e3602'),
+        acc_service_uuid,
         service_type=SERVICE_PRIMARY,
         characteristics=[
             free_fall_characteristic,
@@ -184,6 +194,9 @@ def main():
     )
 
     ################## Accelerator Sensing #################
+    
+    # uBLE Breakout v0.1 use: Power-on on X8 
+    #vin_pin=machine.Pin('X8', machine.Pin.OUT_PP, value=0)
 
     env_sens_peripheral = Peripheral(
         "0280E1003414",
@@ -192,7 +205,10 @@ def main():
         services=[
             accel_sens_service,
             env_sens_service
-        ]
+        ],
+        # uBLE Breakout v0.1 use: nss on Y5, rst on X9
+        # nss_pin=machine.Pin('Y5', machine.Pin.OUT_PP),
+        # rst_pin=machine.Pin('X9', machine.Pin.OUT_PP)
     )
     env_sens_peripheral.set_event_handler(event_handler_callback)
     env_sens_peripheral.run(callback=notify_callback, callback_time=5000)
