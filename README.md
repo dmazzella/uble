@@ -61,6 +61,8 @@ Usage
     - [api_repl.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_repl.py): implement a Bluetooth LE REPL (need _thread enabled and external dependency collections.deque already available into folder 'micropython-lib' of this repository )
       Usable terminal available at [Micropython WebBluetooth REPL](https://dmazzella.github.io/htdocs/repl/)
 
+      <img src="https://media.giphy.com/media/xT9IgI6rvHY8d6Kjqo/source.gif" alt="MicroPython_WebBluetooth_REPL"/>
+
 Software
 ---------------------
 
