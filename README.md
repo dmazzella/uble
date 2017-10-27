@@ -58,6 +58,7 @@ Usage
     - [api_eddystone.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_eddystone.py): implement an Eddystone Beacon device
     - [api_sensor_demo.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_sensor_demo.py): usable for test with 'BlueNRG' app
     - [api_scan.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_scan.py): implement a Scanner object used to scan for LE devices which are broadcasting advertising data 
+    - [api_repl.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_repl.py): implement a Bluetooth LE REPL (need _thread enabled and external dependency collections.deque already available into folder 'micropython-lib' of this repository )
 
 Software
 ---------------------
