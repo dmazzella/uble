@@ -3,7 +3,6 @@
 import gc
 gc.threshold(4096)
 import os
-import machine
 import binascii
 import ustruct
 import utime
@@ -133,8 +132,6 @@ def main():
         len(service_uuid_list), binascii.hexlify(service_uuid_list)
     )
 
-    # uBLE v0.1: Power on
-    machine.Pin('X8', machine.Pin.OUT_PP, value=0)
     repl_peripheral = Peripheral(
         os.urandom(6),
         name="repl",
@@ -143,10 +140,7 @@ def main():
         services=[
             repl_service
         ],
-        event_handler=repl_event_handler,
-        # uBLE v0.1: nss, rst
-        nss_pin=machine.Pin('Y5', machine.Pin.OUT_PP),
-        rst_pin=machine.Pin('X9', machine.Pin.OUT_PP)
+        event_handler=repl_event_handler
     )
     _thread.start_new_thread(repl_peripheral.run, tuple(), dict())
 
