@@ -59,7 +59,7 @@ Usage
     - [api_sensor_demo.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_sensor_demo.py): usable for test with 'BlueNRG' app
     - [api_scan.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_scan.py): implement a Scanner object used to scan for LE devices which are broadcasting advertising data 
     - [api_repl.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_repl.py): implement a Bluetooth LE REPL (need _thread enabled and external dependency collections.deque already available into folder 'micropython-lib' of this repository )
-      Usable terminal available at [Micropython WebBluetooth REPL]: (https://dmazzella.github.io/htdocs/repl/)
+      Usable terminal available at [Micropython WebBluetooth REPL](https://dmazzella.github.io/htdocs/repl/)
 
 Software
 ---------------------
