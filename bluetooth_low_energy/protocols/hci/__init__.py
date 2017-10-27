@@ -11,6 +11,9 @@ HCI_MAX_PAYLOAD_SIZE = const(128)
 
 HCI_READ_PACKET_SIZE = const(128)
 
+HCI_EVENT_HDR_SIZE = const(2)
+
+
 # HCI Packet types
 HCI_COMMAND_PKT = const(0x01)
 HCI_ACLDATA_PKT = const(0x02)
