@@ -363,7 +363,7 @@ class BlueNRG_MS(BaseHCI):
         """
         Verify HCI packet
         """
-        if hci_pckt is None:
+        if not hci_pckt:
             return False
 
         if hci_pckt[HCI_PCK_TYPE_OFFSET] != HCI_EVENT_PKT:
