@@ -55,10 +55,15 @@ class Peripheral(SPBTLE_RF):
         # Reset BlueNRG-MS
         self.reset()
 
+        evt_blue_hal_init = self.hci_wait_event(
+            subevtcode=st_event.EVT_BLUE_HAL_INITIALIZED
+        )
+        # Check BlueNRG-MS ready
+        if evt_blue_hal_init is None:
+            raise ValueError("BlueNRG-MS not ready")
+
         # Check Evt_Blue_Initialized
-        if self.hci_wait_event(
-                subevtcode=st_event.EVT_BLUE_HAL_INITIALIZED
-            ).struct.reason_code != st_constant.RESET_NORMAL:
+        if evt_blue_hal_init.struct.reason_code != st_constant.RESET_NORMAL:
             raise ValueError("reason_code")
 
         # Reset BlueNRG again otherwise we won't be able to change its MAC address.
