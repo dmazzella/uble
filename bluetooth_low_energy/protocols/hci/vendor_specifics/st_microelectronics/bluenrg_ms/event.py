@@ -126,8 +126,8 @@ HCI_VENDOR_EVENTS = {
             "pc": uctypes.UINT32 | 33,
             "xpsr": uctypes.UINT32 | 37,
             "debug_data_len": uctypes.UINT8 | 41,
-            "debug_data": \
-                (uctypes.ARRAY | 46, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-46)
+            "debug_data":
+            (uctypes.ARRAY | 46, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 46)
         }
     ],
     EVT_BLUE_GAP_LIMITED_DISCOVERABLE: [
@@ -162,8 +162,8 @@ HCI_VENDOR_EVENTS = {
             "bdaddr_type": uctypes.UINT8 | 1,
             "bdaddr": (uctypes.ARRAY | 2, uctypes.UINT8 | 6),
             "data_length": uctypes.UINT8 | 8,
-            "data_rssi": \
-                (uctypes.ARRAY | 9, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-9)
+            "data_rssi":
+            (uctypes.ARRAY | 9, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 9)
         }
     ],
     EVT_BLUE_GAP_PROCEDURE_COMPLETE: [
@@ -171,8 +171,8 @@ HCI_VENDOR_EVENTS = {
         {
             "procedure_code": uctypes.UINT8 | 0,
             "status": uctypes.UINT8 | 1,
-            "data": \
-                (uctypes.ARRAY | 2, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-2)
+            "data":
+            (uctypes.ARRAY | 2, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 2)
         }
     ],
     EVT_BLUE_GAP_ADDR_NOT_RESOLVED_IDB05A1: [
@@ -232,15 +232,15 @@ HCI_VENDOR_EVENTS = {
                 "attr_handle": uctypes.UINT16 | 2,
                 "data_length": uctypes.UINT8 | 4,
                 "offset": uctypes.UINT16 | 5,
-                "att_data": \
-                    (uctypes.ARRAY | 7, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-7)
+                "att_data":
+                (uctypes.ARRAY | 7, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 7)
             },
             "IDB04A1": {
                 "conn_handle": uctypes.UINT16 | 0,
                 "attr_handle": uctypes.UINT16 | 2,
                 "data_length": uctypes.UINT8 | 4,
-                "att_data": \
-                    (uctypes.ARRAY | 5, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-5)
+                "att_data":
+                (uctypes.ARRAY | 5, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 5)
             }
         }
     ],
@@ -264,8 +264,8 @@ HCI_VENDOR_EVENTS = {
             "conn_handle": uctypes.UINT16 | 0,
             "event_data_length": uctypes.UINT8 | 2,
             "format": uctypes.UINT8 | 3,
-            "handle_uuid_pair": \
-                (uctypes.ARRAY | 4, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-4)
+            "handle_uuid_pair":
+            (uctypes.ARRAY | 4, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 4)
         }
     ],
     EVT_BLUE_ATT_FIND_BY_TYPE_VAL_RESP: [
@@ -273,8 +273,8 @@ HCI_VENDOR_EVENTS = {
         {
             "conn_handle": uctypes.UINT16 | 0,
             "event_data_length": uctypes.UINT8 | 2,
-            "handles_info_list": \
-                (uctypes.ARRAY | 3, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-3)
+            "handles_info_list":
+            (uctypes.ARRAY | 3, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 3)
         }
     ],
     EVT_BLUE_ATT_READ_BY_TYPE_RESP: [
@@ -283,8 +283,8 @@ HCI_VENDOR_EVENTS = {
             "conn_handle": uctypes.UINT16 | 0,
             "event_data_length": uctypes.UINT8 | 2,
             "handle_value_pair_length": uctypes.UINT8 | 3,
-            "handle_value_pair": \
-                (uctypes.ARRAY | 4, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-4)
+            "handle_value_pair":
+            (uctypes.ARRAY | 4, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 4)
         }
     ],
     EVT_BLUE_ATT_READ_RESP: [
@@ -292,8 +292,8 @@ HCI_VENDOR_EVENTS = {
         {
             "conn_handle": uctypes.UINT16 | 0,
             "event_data_length": uctypes.UINT8 | 2,
-            "attribute_value": \
-                (uctypes.ARRAY | 3, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-3)
+            "attribute_value":
+            (uctypes.ARRAY | 3, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 3)
         }
     ],
     EVT_BLUE_ATT_READ_BLOB_RESP: [
@@ -301,8 +301,8 @@ HCI_VENDOR_EVENTS = {
         {
             "conn_handle": uctypes.UINT16 | 0,
             "event_data_length": uctypes.UINT8 | 2,
-            "part_attribute_value": \
-                (uctypes.ARRAY | 3, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-3)
+            "part_attribute_value":
+            (uctypes.ARRAY | 3, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 3)
         }
     ],
     EVT_BLUE_ATT_READ_MULTIPLE_RESP: [
@@ -310,8 +310,8 @@ HCI_VENDOR_EVENTS = {
         {
             "conn_handle": uctypes.UINT16 | 0,
             "event_data_length": uctypes.UINT8 | 2,
-            "set_of_values": \
-                (uctypes.ARRAY | 3, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-3)
+            "set_of_values":
+            (uctypes.ARRAY | 3, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 3)
         }
     ],
     EVT_BLUE_ATT_READ_BY_GROUP_TYPE_RESP: [
@@ -320,8 +320,8 @@ HCI_VENDOR_EVENTS = {
             "conn_handle": uctypes.UINT16 | 0,
             "event_data_length": uctypes.UINT8 | 2,
             "attribute_data_length": uctypes.UINT8 | 3,
-            "attribute_data_list": \
-                (uctypes.ARRAY | 4, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-4)
+            "attribute_data_list":
+            (uctypes.ARRAY | 4, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 4)
         }
     ],
     EVT_BLUE_ATT_PREPARE_WRITE_RESP: [
@@ -331,8 +331,8 @@ HCI_VENDOR_EVENTS = {
             "event_data_length": uctypes.UINT8 | 2,
             "attribute_handle": uctypes.UINT16 | 3,
             "offset": uctypes.UINT16 | 5,
-            "part_attr_value": \
-                (uctypes.ARRAY | 7, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-7)
+            "part_attr_value":
+            (uctypes.ARRAY | 7, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 7)
         }
     ],
     EVT_BLUE_ATT_EXEC_WRITE_RESP: [
@@ -348,8 +348,8 @@ HCI_VENDOR_EVENTS = {
             "conn_handle": uctypes.UINT16 | 0,
             "event_data_length": uctypes.UINT8 | 2,
             "attr_handle": uctypes.UINT16 | 3,
-            "attr_value": \
-                (uctypes.ARRAY | 5, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-5)
+            "attr_value":
+            (uctypes.ARRAY | 5, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 5)
         }
     ],
     EVT_BLUE_GATT_NOTIFICATION: [
@@ -358,8 +358,8 @@ HCI_VENDOR_EVENTS = {
             "conn_handle": uctypes.UINT16 | 0,
             "event_data_length": uctypes.UINT8 | 2,
             "attr_handle": uctypes.UINT16 | 3,
-            "attr_value": \
-                (uctypes.ARRAY | 5, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-5)
+            "attr_value":
+            (uctypes.ARRAY | 5, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 5)
         }
     ],
     EVT_BLUE_GATT_PROCEDURE_COMPLETE: [
@@ -386,8 +386,8 @@ HCI_VENDOR_EVENTS = {
             "conn_handle": uctypes.UINT16 | 0,
             "event_data_length": uctypes.UINT8 | 2,
             "attr_handle": uctypes.UINT16 | 3,
-            "attr_value": \
-                (uctypes.ARRAY | 5, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-5)
+            "attr_value":
+            (uctypes.ARRAY | 5, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 5)
         }
     ],
     EVT_BLUE_GATT_WRITE_PERMIT_REQ: [
@@ -396,8 +396,8 @@ HCI_VENDOR_EVENTS = {
             "conn_handle": uctypes.UINT16 | 0,
             "attr_handle": uctypes.UINT16 | 2,
             "data_length": uctypes.UINT8 | 4,
-            "data_buffer": \
-                (uctypes.ARRAY | 5, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-5)
+            "data_buffer":
+            (uctypes.ARRAY | 5, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 5)
         }
     ],
     EVT_BLUE_GATT_READ_PERMIT_REQ: [
@@ -414,8 +414,8 @@ HCI_VENDOR_EVENTS = {
         {
             "conn_handle": uctypes.UINT16 | 0,
             "data_length": uctypes.UINT8 | 2,
-            "data": \
-                (uctypes.ARRAY | 3, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-3)
+            "data":
+            (uctypes.ARRAY | 3, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 3)
         }
     ],
     EVT_BLUE_GATT_TX_POOL_AVAILABLE: [
@@ -438,8 +438,8 @@ HCI_VENDOR_EVENTS = {
             "attr_handle": uctypes.UINT16 | 2,
             "offset": uctypes.UINT16 | 4,
             "data_length": uctypes.UINT8 | 6,
-            "data": \
-                (uctypes.ARRAY | 7, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-7)
+            "data":
+            (uctypes.ARRAY | 7, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 7)
         }
     ]
 }

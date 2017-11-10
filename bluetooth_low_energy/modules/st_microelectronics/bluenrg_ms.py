@@ -156,16 +156,21 @@ HCI_VENDOR_EVENTS.update(ST_HCI_VENDOR_EVENTS)
 HCI_PCK_TYPE_OFFSET = const(0)
 EVENT_PARAMETER_TOT_LEN_OFFSET = const(2)
 
+
 class CSContext(object):
+
     def __init__(self, pin):
         self._pin = pin
+
     def __enter__(self):
         # Assert CS line
         self._pin.off()
+
     def __exit__(self, exc_type, exc_value, traceback):
         # Release CS line
         self._pin.on()
         return all(map(lambda x: x is None, [exc_type, exc_value, traceback]))
+
 
 class BlueNRG_MS(BaseHCI):
     """
@@ -233,7 +238,8 @@ class BlueNRG_MS(BaseHCI):
 
     def set_spi_irq_as_output(self):
         """Pull IRQ high"""
-        self._irq_pin.init(mode=machine.Pin.OUT_PP, pull=machine.Pin.PULL_NONE, value=1)
+        self._irq_pin.init(mode=machine.Pin.OUT_PP,
+                           pull=machine.Pin.PULL_NONE, value=1)
 
     def set_spi_irq_as_input(self):
         """IRQ input"""
@@ -328,8 +334,8 @@ class BlueNRG_MS(BaseHCI):
                 rx_write_bytes = header_slave[1]
                 rx_read_bytes = (header_slave[4] << 8) | header_slave[3]
                 if header_slave[0] == 0x02 and (
-                        rx_write_bytes > 0 or rx_read_bytes > 0
-                    ):
+                    rx_write_bytes > 0 or rx_read_bytes > 0
+                ):
                     # SPI is ready
                     if header:
                         # avoid to write more data that size of the buffer
@@ -338,7 +344,8 @@ class BlueNRG_MS(BaseHCI):
                             self._spi_bus.write_readinto(header, result)
                             if param:
                                 rx_write_bytes -= len(header)
-                                # avoid to read more data that size of the buffer
+                                # avoid to read more data that size of the
+                                # buffer
                                 if len(param) > rx_write_bytes:
                                     tx_bytes = rx_write_bytes
                                 else:
@@ -357,7 +364,6 @@ class BlueNRG_MS(BaseHCI):
             retry -= 1
 
         return result
-
 
     def hci_verify(self, hci_pckt):
         """

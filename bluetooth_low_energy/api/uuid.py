@@ -3,6 +3,7 @@ from bluetooth_low_energy.api.constants import *
 from micropython import const
 from ubinascii import hexlify, unhexlify
 
+
 class UUID(object):
     """ UUID """
 

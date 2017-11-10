@@ -19,6 +19,7 @@ HCI_SCO_STRUCT = {
     "length": uctypes.UINT8 | 2
 }
 
+
 class HCI_SCO(object):
     """HCI_SCO"""
     _struct_format = "<HB"

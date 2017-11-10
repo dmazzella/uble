@@ -24,7 +24,7 @@ RESET_ECC_ERR = const(9)
 # Config_vals Offsets and lengths for configuration values
 # See aci_hal_write_config_data().
 
-#Configuration values.
+# Configuration values.
 
 # Bluetooth public address
 CONFIG_DATA_PUBADDR_OFFSET = const(0x00)
@@ -244,7 +244,8 @@ SCAN_RSP = const(0x04)
 ADV_INTERVAL_LOWEST_CONN = const(0x0020)
 # Highest allowed interval value (10.24s)..multiple of 625us.
 ADV_INTERVAL_HIGHEST = const(0x4000)
-#lowest allowed interval value for non connectable types (100ms)..multiple of 625us.
+# lowest allowed interval value for non connectable types
+# (100ms)..multiple of 625us.
 ADV_INTERVAL_LOWEST_NONCONN = const(0x00a0)
 
 # Advertising channels

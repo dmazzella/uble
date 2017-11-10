@@ -212,14 +212,14 @@ HCI_COMMANDS = {
                 "LE_READ_ADV_CHANNEL_TX_POWER",
                 None,
                 {
-                    "status": uctypes.UINT8   | 0,
-                    "level": uctypes.INT8   | 1
+                    "status": uctypes.UINT8 | 0,
+                    "level": uctypes.INT8 | 1
                 }
             ],
             OCF_LE_SET_ADV_DATA: [
                 "LE_SET_ADV_DATA",
                 {
-                    "length": uctypes.UINT8   | 0,
+                    "length": uctypes.UINT8 | 0,
                     "data": (uctypes.ARRAY | 1, uctypes.UINT8 | 31)
                 },
                 {
@@ -229,7 +229,7 @@ HCI_COMMANDS = {
             OCF_LE_SET_SCAN_RESPONSE_DATA: [
                 "LE_SET_SCAN_RESPONSE_DATA",
                 {
-                    "length": uctypes.UINT8   | 0,
+                    "length": uctypes.UINT8 | 0,
                     "data": (uctypes.ARRAY | 1, uctypes.UINT8 | 31)
                 },
                 {
@@ -472,17 +472,19 @@ HCI_COMMANDS = {
     ]
 }
 
+
 class OPCODE(object):
     """OPCODE"""
     @staticmethod
     def pack(ogf, ocf):
         """pack"""
-        return (ocf & 0x03ff)|(ogf << 10)
+        return (ocf & 0x03ff) | (ogf << 10)
 
     @staticmethod
     def unpack(opcode):
         """unpack"""
         return (opcode >> 10), (opcode & 0x03ff)
+
 
 class HCI_COMMAND(object):
     """HCI_COMMAND"""

@@ -61,8 +61,8 @@ HCI_LE_META_EVENTS = {
             "bdaddr_type":  uctypes.UINT8 | 1,
             "bdaddr": (uctypes.ARRAY | 2, uctypes.UINT8 | 6),
             "data_length":  uctypes.UINT8 | 8,
-            "data_RSSI": \
-                (uctypes.ARRAY | 9, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-9)
+            "data_RSSI":
+            (uctypes.ARRAY | 9, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 9)
         }
     ],
     EVT_LE_CONN_UPDATE_COMPLETE: [
@@ -179,7 +179,7 @@ HCI_EVENTS = {
         {
             "num_hndl": uctypes.UINT8 | 0,
             "hndl": (
-                uctypes.ARRAY | 1, (HCI_MAX_PAYLOAD_SIZE // 4)-2,
+                uctypes.ARRAY | 1, (HCI_MAX_PAYLOAD_SIZE // 4) - 2,
                 {
                     "hndl": uctypes.UINT16 | 0,
                     "num_comp_pkts": uctypes.UINT16 | 2
@@ -204,17 +204,18 @@ HCI_EVENTS = {
         "LE_META_EVENT",
         {
             "subevent": uctypes.UINT8 | 0,
-            "data": (uctypes.ARRAY | 1, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-1)
+            "data": (uctypes.ARRAY | 1, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 1)
         }
     ],
     EVT_VENDOR: [
         "VENDOR",
         {
             "subevent": uctypes.UINT16 | 0,
-            "data": (uctypes.ARRAY | 2, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-1)
+            "data": (uctypes.ARRAY | 2, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 1)
         }
     ]
 }
+
 
 class HCI_EVENT(object):
     """HCI_EVENT"""

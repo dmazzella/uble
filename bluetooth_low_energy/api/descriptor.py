@@ -2,6 +2,7 @@
 from bluetooth_low_energy.api.constants import *
 from bluetooth_low_energy.api.uuid import UUID
 
+
 class Descriptor(object):
     """ Descriptor """
 

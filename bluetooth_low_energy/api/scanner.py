@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-import gc; gc.threshold(4096)
+import gc
+gc.threshold(4096)
 import utime
 import ustruct
 from micropython import const
@@ -21,7 +22,8 @@ class Scanner(SPBTLE_RF):
         name = kwargs.pop('name', '')
         super(Scanner, self).__init__(*args, **kwargs)
 
-        self.address = address if isinstance(address, bytes) else unhexlify(address)
+        self.address = address if isinstance(
+            address, bytes) else unhexlify(address)
         self.name = name
         self.response = []
 
@@ -31,8 +33,8 @@ class Scanner(SPBTLE_RF):
 
         # Check Evt_Blue_Initialized
         if self.hci_wait_event(
-                subevtcode=st_event.EVT_BLUE_HAL_INITIALIZED
-            ).struct.reason_code != st_constant.RESET_NORMAL:
+            subevtcode=st_event.EVT_BLUE_HAL_INITIALIZED
+        ).struct.reason_code != st_constant.RESET_NORMAL:
             raise ValueError("reason_code")
 
         # Configure BlueNRG-MS address as public (its public address is used)
@@ -95,10 +97,11 @@ class Scanner(SPBTLE_RF):
                 if hci_evt.subevtcode == event.EVT_LE_ADVERTISING_REPORT:
                     hci_evt.data = hci_evt.data[1:]
                     if hci_evt.struct.evt_type in (
-                            st_constant.ADV_IND, st_constant.ADV_SCAN_IND
-                        ):
+                        st_constant.ADV_IND, st_constant.ADV_SCAN_IND
+                    ):
                         data = bytes(
-                            hci_evt.struct.data_RSSI[:hci_evt.struct.data_length]
+                            hci_evt.struct.data_RSSI[
+                                :hci_evt.struct.data_length]
                         ) if hci_evt.struct.data_length else b''
                         bdaddr = bytes(hci_evt.struct.bdaddr)
                         bdaddr_type = hci_evt.struct.bdaddr_type
@@ -110,7 +113,6 @@ class Scanner(SPBTLE_RF):
                 if hci_evt.subevtcode == st_event.EVT_BLUE_GAP_PROCEDURE_COMPLETE:
                     if hci_evt.struct.procedure_code == st_constant.GAP_GENERAL_DISCOVERY_PROC:
                         pass
-
 
     def start(self):
         """ start """

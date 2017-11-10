@@ -21,6 +21,7 @@ HCI_UART_PKT_TYPES = {
     VENDOR: "VENDOR"
 }
 
+
 class HCI_UART(object):
     """HCI_UART"""
     _struct_format = "<B"

@@ -262,13 +262,13 @@ HCI_VENDOR_COMMANDS = [
             {
                 "address": uctypes.UINT32 | 0,
                 "data_len": uctypes.UINT16 | 4,
-                "data": \
-                    (uctypes.ARRAY | 6, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-6)
+                "data":
+                (uctypes.ARRAY | 6, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 6)
             },
             {
                 "status": uctypes.UINT8 | 0,
-                "data": \
-                    (uctypes.ARRAY | 1, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-1)
+                "data":
+                (uctypes.ARRAY | 1, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 1)
             }
         ],
         OCF_UPDATER_CALC_CRC: [
@@ -414,7 +414,7 @@ HCI_VENDOR_COMMANDS = [
                     "own_address_type": uctypes.UINT8 | 1
                 },
                 "IDB04A1": {
-                    "advertising_event_type":uctypes.UINT8 | 0
+                    "advertising_event_type": uctypes.UINT8 | 0
                 }
             },
             {
@@ -593,8 +593,8 @@ HCI_VENDOR_COMMANDS = [
                 "own_address_type": uctypes.UINT8 | 5,
                 "filter_duplicates": uctypes.UINT8 | 6,
                 "num_whitelist_entries": uctypes.UINT8 | 7,
-                "addr_array": \
-                    (uctypes.ARRAY | 8, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-8)
+                "addr_array":
+                (uctypes.ARRAY | 8, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 8)
             },
             {
                 "status": uctypes.UINT8 | 0
@@ -670,8 +670,8 @@ HCI_VENDOR_COMMANDS = [
                 "adv_interv_max": uctypes.UINT16 | 2,
                 "dv_type": uctypes.UINT8 | 4,
                 "own_addr_type": uctypes.UINT8 | 5,
-                "var_len_data": \
-                    (uctypes.ARRAY | 6, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-6)
+                "var_len_data":
+                (uctypes.ARRAY | 6, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 6)
             },
             {
                 "status": uctypes.UINT8 | 0
@@ -696,15 +696,15 @@ HCI_VENDOR_COMMANDS = [
             {
                 "status": uctypes.UINT8 | 0,
                 "num_addr": uctypes.UINT8 | 1,
-                "dev_list": \
-                    (uctypes.ARRAY | 2, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-2)
+                "dev_list":
+                (uctypes.ARRAY | 2, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 2)
             }
         ],
         OCF_GAP_IS_DEVICE_BONDED: [
             "GAP_IS_DEVICE_BONDED",
             {
                 "peer_address_type": uctypes.UINT8 | 0,
-                "peer_address": (uctypes.ARRAY |1, uctypes.UINT8 | 6)
+                "peer_address": (uctypes.ARRAY | 1, uctypes.UINT8 | 6)
             },
             {
                 "status": uctypes.UINT8 | 0
@@ -822,8 +822,8 @@ HCI_VENDOR_COMMANDS = [
                 "end_handle": uctypes.UINT16 | 4,
                 "uuid": (uctypes.ARRAY | 6, uctypes.UINT8 | 2),
                 "attr_val_len": uctypes.UINT8 | 8,
-                "attr_val": \
-                    (uctypes.ARRAY | 9, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-9)
+                "attr_val":
+                (uctypes.ARRAY | 9, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 9)
             },
             {
                 "status": uctypes.UINT8 | 0
@@ -862,8 +862,8 @@ HCI_VENDOR_COMMANDS = [
                 "attr_handle": uctypes.UINT16 | 2,
                 "value_offset": uctypes.UINT16 | 4,
                 "attr_val_len": uctypes.UINT8 | 6,
-                "attr_val": \
-                    (uctypes.ARRAY | 7, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-7)
+                "attr_val":
+                (uctypes.ARRAY | 7, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 7)
             },
             {
                 "status": uctypes.UINT8 | 0
@@ -978,8 +978,8 @@ HCI_VENDOR_COMMANDS = [
             {
                 "conn_handle": uctypes.UINT16 | 0,
                 "num_handles": uctypes.UINT8 | 2,
-                "set_of_handles": \
-                    (uctypes.ARRAY | 3, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-3)
+                "set_of_handles":
+                (uctypes.ARRAY | 3, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 3)
             },
             {
                 "status": uctypes.UINT8 | 0
@@ -999,8 +999,8 @@ HCI_VENDOR_COMMANDS = [
                 "attr_handle": uctypes.UINT16 | 2,
                 "val_offset": uctypes.UINT16 | 4,
                 "val_len": uctypes.UINT8 | 6,
-                "attr_val": \
-                    (uctypes.ARRAY | 7, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-7)
+                "attr_val":
+                (uctypes.ARRAY | 7, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 7)
             },
             {
                 "status": uctypes.UINT8 | 0
@@ -1013,8 +1013,8 @@ HCI_VENDOR_COMMANDS = [
                 "attr_handle": uctypes.UINT16 | 2,
                 "val_offset": uctypes.UINT16 | 4,
                 "val_len": uctypes.UINT8 | 6,
-                "attr_val": \
-                    (uctypes.ARRAY | 7, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-7)
+                "attr_val":
+                (uctypes.ARRAY | 7, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 7)
             },
             {
                 "status": uctypes.UINT8 | 0
@@ -1027,8 +1027,8 @@ HCI_VENDOR_COMMANDS = [
                 "attr_handle": uctypes.UINT16 | 2,
                 "val_offset": uctypes.UINT16 | 4,
                 "val_len": uctypes.UINT8 | 6,
-                "attr_val": \
-                    (uctypes.ARRAY | 7, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-7)
+                "attr_val":
+                (uctypes.ARRAY | 7, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 7)
             },
             {
                 "status": uctypes.UINT8 | 0
@@ -1068,8 +1068,8 @@ HCI_VENDOR_COMMANDS = [
                 "conn_handle": uctypes.UINT16 | 0,
                 "attr_handle": uctypes.UINT16 | 2,
                 "val_len": uctypes.UINT8 | 4,
-                "attr_val": \
-                    (uctypes.ARRAY | 5, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-5)
+                "attr_val":
+                (uctypes.ARRAY | 5, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 5)
             },
             {
                 "status": uctypes.UINT8 | 0
@@ -1081,8 +1081,8 @@ HCI_VENDOR_COMMANDS = [
                 "conn_handle": uctypes.UINT16 | 0,
                 "attr_handle": uctypes.UINT16 | 2,
                 "val_len": uctypes.UINT8 | 4,
-                "attr_val": \
-                    (uctypes.ARRAY | 5, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-5)
+                "attr_val":
+                (uctypes.ARRAY | 5, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 5)
             },
             {
                 "status": uctypes.UINT8 | 0
@@ -1139,8 +1139,8 @@ HCI_VENDOR_COMMANDS = [
             {
                 "status": uctypes.UINT8 | 0,
                 "value_len": uctypes.UINT16 | 1,
-                "value": \
-                    (uctypes.ARRAY | 3, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-3)
+                "value":
+                (uctypes.ARRAY | 3, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 3)
             }
         ],
         OCF_GATT_READ_HANDLE_VALUE_OFFSET: [
@@ -1152,8 +1152,8 @@ HCI_VENDOR_COMMANDS = [
             {
                 "status": uctypes.UINT8 | 0,
                 "value_len": uctypes.UINT16 | 1,
-                "value": \
-                    (uctypes.ARRAY | 3, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-3)
+                "value":
+                (uctypes.ARRAY | 3, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 3)
             }
         ],
         OCF_GATT_UPD_CHAR_VAL_EXT: [
@@ -1165,8 +1165,8 @@ HCI_VENDOR_COMMANDS = [
                 "char_length": uctypes.UINT16 | 5,
                 "value_offset": uctypes.UINT16 | 7,
                 "value_length": uctypes.UINT8 | 9,
-                "value": \
-                    (uctypes.ARRAY | 10, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE-10)
+                "value":
+                (uctypes.ARRAY | 10, uctypes.UINT8 | HCI_MAX_PAYLOAD_SIZE - 10)
             },
             {
                 "status": uctypes.UINT8 | 0

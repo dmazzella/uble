@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-import gc; gc.threshold(4096)
+import gc
+gc.threshold(4096)
 from micropython import const
 from binascii import hexlify, unhexlify
 
@@ -73,8 +74,8 @@ class Peripheral(SPBTLE_RF):
 
         # Check Evt_Blue_Initialized
         if self.hci_wait_event(
-                subevtcode=st_event.EVT_BLUE_HAL_INITIALIZED
-            ).struct.reason_code != st_constant.RESET_NORMAL:
+            subevtcode=st_event.EVT_BLUE_HAL_INITIALIZED
+        ).struct.reason_code != st_constant.RESET_NORMAL:
             raise ValueError("reason_code")
 
         # Configure BlueNRG-MS address as public (its public address is used)
@@ -262,7 +263,6 @@ class Peripheral(SPBTLE_RF):
                                     handler=hci_evt.struct.attr_handle,
                                     data=None
                                 )
-
 
     def set_discoverable(self):
         """ set_discoverable """

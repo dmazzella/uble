@@ -12,34 +12,34 @@ References can be found here:
     ** [vol 3] Part F (Section 3.4.8) - Attribute Opcode Summary
 """
 ATT_PDUS = {
-    0x01 : "Error_Response",
-    0x02 : "Exchange_MTU_Request",
-    0x03 : "Exchange_MTU_Response",
-    0x04 : "Find_Information_Request",
-    0x05 : "Find_Information_Response",
-    0x06 : "Find_By_Type_Value_Request",
-    0x07 : "Find_By_Type_Value_Response",
-    0x08 : "Read_By_Type_Request",
-    0x09 : "Read_By_Type_Response",
-    0x0A : "Read_Request",
-    0x0B : "Read_Response",
-    0x0C : "Read_Blob_Request",
-    0x0D : "Read_Blob_Response",
-    0x0E : "Read_Multiple_Request",
-    0x0F : "Read_Multiple_Response",
-    0x10 : "Read_By_Group_Type_Request",
-    0x11 : "Read_By_Group_Type_Response",
-    0x12 : "Write_Request",
-    0x13 : "Write_Response",
-    0x52 : "Write_Command",
-    0xD2 : "Signed_Write_Command",
-    0x16 : "Prepare_Write_Request",
-    0x17 : "Prepare_Write_Response",
-    0x18 : "Execute_Write_Request",
-    0x19 : "Execute_Write_Response",
-    0x1B : "Handle_Value_Notification",
-    0x1D : "Handle_Value_Indication",
-    0x1E : "Handle_Value_Confirmation"
+    0x01: "Error_Response",
+    0x02: "Exchange_MTU_Request",
+    0x03: "Exchange_MTU_Response",
+    0x04: "Find_Information_Request",
+    0x05: "Find_Information_Response",
+    0x06: "Find_By_Type_Value_Request",
+    0x07: "Find_By_Type_Value_Response",
+    0x08: "Read_By_Type_Request",
+    0x09: "Read_By_Type_Response",
+    0x0A: "Read_Request",
+    0x0B: "Read_Response",
+    0x0C: "Read_Blob_Request",
+    0x0D: "Read_Blob_Response",
+    0x0E: "Read_Multiple_Request",
+    0x0F: "Read_Multiple_Response",
+    0x10: "Read_By_Group_Type_Request",
+    0x11: "Read_By_Group_Type_Response",
+    0x12: "Write_Request",
+    0x13: "Write_Response",
+    0x52: "Write_Command",
+    0xD2: "Signed_Write_Command",
+    0x16: "Prepare_Write_Request",
+    0x17: "Prepare_Write_Response",
+    0x18: "Execute_Write_Request",
+    0x19: "Execute_Write_Response",
+    0x1B: "Handle_Value_Notification",
+    0x1D: "Handle_Value_Indication",
+    0x1E: "Handle_Value_Confirmation"
 }
 
 """
@@ -65,6 +65,7 @@ ATT_STRUCT = {
     "b": uctypes.BFUINT8 | 0 | 6 << uctypes.BF_POS | 1 << uctypes.BF_LEN,
     "c": uctypes.BFUINT8 | 0 | 7 << uctypes.BF_POS | 1 << uctypes.BF_LEN
 }
+
 
 class ATT(object):
     """ATT"""

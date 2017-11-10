@@ -23,18 +23,19 @@ SIGNING_INFORMATION = const(0x0a)
 SECURITY_REQUEST = const(0x0b)
 
 SMP_PDUS = {
-    PAIRING_REQUEST : "Pairing_Request",
-    PAIRING_RESPONSE : "Pairing_Response",
-    PAIRING_CONFIRM : "Pairing_Confirm",
-    PAIRING_RANDOM : "Pairing_Random",
-    PAIRING_FAILED : "Pairing_Failed",
-    ENCRYPTION_INFORMATION : "Encryption_Information",
-    MASTER_IDENTIFICATION : "Master_Identification",
-    IDENTITY_INFORMATION : "Identity_Information",
-    IDENTITY_ADDRESS_INFORMATION : "Identity_Address Information",
-    SIGNING_INFORMATION : "Signing_Information",
-    SECURITY_REQUEST : "Security_Request"
+    PAIRING_REQUEST: "Pairing_Request",
+    PAIRING_RESPONSE: "Pairing_Response",
+    PAIRING_CONFIRM: "Pairing_Confirm",
+    PAIRING_RANDOM: "Pairing_Random",
+    PAIRING_FAILED: "Pairing_Failed",
+    ENCRYPTION_INFORMATION: "Encryption_Information",
+    MASTER_IDENTIFICATION: "Master_Identification",
+    IDENTITY_INFORMATION: "Identity_Information",
+    IDENTITY_ADDRESS_INFORMATION: "Identity_Address Information",
+    SIGNING_INFORMATION: "Signing_Information",
+    SECURITY_REQUEST: "Security_Request"
 }
+
 
 class SMP(object):
     """SMP"""

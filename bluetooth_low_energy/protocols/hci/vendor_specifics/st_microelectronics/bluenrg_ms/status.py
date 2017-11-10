@@ -49,7 +49,7 @@ BLE_STATUS_CHARAC_ALREADY_EXISTS = const(0x66)
 BLE_STATUS_NO_VALID_SLOT = const(0x82)
 
 # Returned when a scan window shorter than minimum allowed value has been
-#requested (i.e. 2ms)
+# requested (i.e. 2ms)
 BLE_STATUS_SCAN_WINDOW_SHORT = const(0x83)
 
 # Returned when the maximum requested interval to be allocated is shorter then

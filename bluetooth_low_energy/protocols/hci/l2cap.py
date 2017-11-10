@@ -24,6 +24,7 @@ L2CAP_CHANNEL_IDS = {
     L2CAP_CID_SMP: "SMP"
 }
 
+
 class L2CAP(object):
 
     _struct_format = "<HH"
@@ -141,19 +142,20 @@ L2CAP_SCH_PDUS = {
     SCH_MOVE_CHANNEL_REQUEST: "SCH Move Channel request",
     SCH_MOVE_CHANNEL_RESPONSE: "SCH Move Channel response",
     SCH_MOVE_CHANNEL_CONFIRMATION: "SCH Move Channel Confirmation",
-    SCH_MOVE_CHANNEL_CONFIRMATION_RESPONSE: \
-        "SCH Move Channel Confirmation response",
-    LE_SCH_CONNECTION_PARAMETER_UPDATE_REQUEST: \
+    SCH_MOVE_CHANNEL_CONFIRMATION_RESPONSE:
+    "SCH Move Channel Confirmation response",
+    LE_SCH_CONNECTION_PARAMETER_UPDATE_REQUEST:
         "LE SCH Connection_Parameter_Update_Request",
-    LE_SCH_CONNECTION_PARAMETER_UPDATE_RESPONSE: \
+    LE_SCH_CONNECTION_PARAMETER_UPDATE_RESPONSE:
         "LE SCH Connection_Parameter_Update_Response",
-    LE_SCH_LE_CREDIT_BASED_CONNECTION_REQUEST: \
+    LE_SCH_LE_CREDIT_BASED_CONNECTION_REQUEST:
         "LE SCH LE_Credit_Based_Connection Request",
-    LE_SCH_LE_CREDIT_BASED_CONNECTION_RESPONSE: \
+    LE_SCH_LE_CREDIT_BASED_CONNECTION_RESPONSE:
         "LE SCH LE_Credit_Based_Connection Response",
-    LE_SCH_LE_FLOW_CONTROL_CREDIT: \
+    LE_SCH_LE_FLOW_CONTROL_CREDIT:
         "LE SCH LE_Flow_Control_Credit"
 }
+
 
 class L2CAP_SCH(object):
     """L2CAP_SCH"""

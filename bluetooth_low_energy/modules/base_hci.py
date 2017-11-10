@@ -42,10 +42,14 @@ from bluetooth_low_energy.protocols.hci.cmd import (
     HCI_COMMAND)
 
 # Hardware Exception
+
+
 class HardwareException(Exception):
     """HardwareException"""
+
     def __init__(self, message):
         super(HardwareException, self).__init__(message)
+
 
 class BaseHCI(object):
     """

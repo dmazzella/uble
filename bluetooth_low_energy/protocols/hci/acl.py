@@ -45,6 +45,7 @@ PB_FLAGS = {
     ACL_PB_COMPLETE_L2CAP_PDU: "COMPLETE_L2CAP_PDU"
 }
 
+
 class HCI_ACL(object):
     """HCI_ACL"""
     _struct_format = "<I"
