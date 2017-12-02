@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0103
+# pylint: disable=C0111
 import ustruct
 import uctypes
 from ubinascii import hexlify, unhexlify
@@ -294,7 +296,8 @@ class HCI_EVENT(object):
         Parse HCI event data
 
         References can be found here:
-        * https://www.bluetooth.org/en-us/specification/adopted-specifications - Core specification 4.1
+        * https://www.bluetooth.org/en-us/specification/adopted-specifications
+          - Core specification 4.1
         ** [vol 2] Part E (Section 5) - HCI Data Formats
         ** [vol 2] Part E (Section 5.4) - Exchange of HCI-specific information
         ** [vol 2] Part E (Section 7.7) - Events
@@ -302,7 +305,7 @@ class HCI_EVENT(object):
 
         All integer values are stored in "little-endian" order.
         """
-        evtcode, length = ustruct.unpack(
+        evtcode, _ = ustruct.unpack(
             HCI_EVENT.struct_format,
             data[:HCI_EVENT._struct_size]
         )

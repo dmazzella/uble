@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0103
+# pylint: disable=C0111
 import ustruct
 import uctypes
 from ubinascii import hexlify, unhexlify
@@ -122,11 +124,11 @@ class ATT(object):
         """
         opcode = ustruct.unpack(ATT.struct_format, data[:ATT.struct_size])[0]
 
-        att = uctypes.struct(
-            uctypes.addressof(data[:ATT.struct_size]),
-            ATT_STRUCT,
-            uctypes.LITTLE_ENDIAN
-        )
+        # att = uctypes.struct(
+        #     uctypes.addressof(data[:ATT.struct_size]),
+        #     ATT_STRUCT,
+        #     uctypes.LITTLE_ENDIAN
+        # )
 
         data = data[ATT.struct_size:]
         return ATT(opcode, data)

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0103
+# pylint: disable=C0111
 import ustruct
 import uctypes
 from ubinascii import hexlify, unhexlify
@@ -579,7 +581,7 @@ class HCI_COMMAND(object):
 
         All integer values are stored in "little-endian" order.
         """
-        opcode, length = ustruct.unpack_from(
+        opcode, _ = ustruct.unpack_from(
             HCI_COMMAND.struct_format, data[:HCI_COMMAND.struct_size]
         )
         data = data[HCI_COMMAND.struct_size:]

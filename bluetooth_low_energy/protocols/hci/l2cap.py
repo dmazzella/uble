@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0103
+# pylint: disable=C0111
 import ustruct
 from ubinascii import hexlify, unhexlify
 from micropython import const
@@ -83,7 +85,7 @@ class L2CAP(object):
         ** Core specification 4.1
         ** [vol 3] Part A (Section 3) - Data Packet Format
         """
-        length, cid = ustruct.unpack(
+        _, cid = ustruct.unpack(
             L2CAP.struct_format,
             data[:L2CAP.struct_size]
         )
@@ -212,7 +214,7 @@ class L2CAP_SCH(object):
         ** Core specification 4.1
         ** [vol 3] Part A (Section 4) - Signaling Packet Formats
         """
-        code, cid, length = ustruct.unpack(
+        code, cid, _ = ustruct.unpack(
             L2CAP_SCH.struct_format,
             data[:L2CAP_SCH.struct_size]
         )

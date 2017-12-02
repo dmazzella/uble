@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0103
+# pylint: disable=C0111
 import ustruct
 from ubinascii import hexlify, unhexlify
 
