@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0103
+# pylint: disable=C0111
+# pylint: disable=W0235
 from bluetooth_low_energy.modules.st_microelectronics.bluenrg_ms import (
     BlueNRG_MS)
 

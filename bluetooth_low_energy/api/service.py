@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0111
 from micropython import const
 from bluetooth_low_energy.api.characteristic import Characteristic
 from bluetooth_low_energy.api.constants import *

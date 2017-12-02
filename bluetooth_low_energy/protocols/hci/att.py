@@ -69,8 +69,8 @@ ATT_STRUCT = {
 
 class ATT(object):
     """ATT"""
-    _struct_format = "<B"
-    _struct_size = ustruct.calcsize(_struct_format)
+    struct_format = "<B"
+    struct_size = ustruct.calcsize(struct_format)
 
     def __init__(self, opcode, data=b''):
         self._opcode = opcode
@@ -120,19 +120,19 @@ class ATT(object):
             ** Core specification 4.1
             ** [vol 3] Part F (Section 3.3) - Attribute PDU
         """
-        opcode = ustruct.unpack(ATT._struct_format, data[:ATT._struct_size])[0]
+        opcode = ustruct.unpack(ATT.struct_format, data[:ATT.struct_size])[0]
 
         att = uctypes.struct(
-            uctypes.addressof(data[:ATT._struct_size]),
+            uctypes.addressof(data[:ATT.struct_size]),
             ATT_STRUCT,
             uctypes.LITTLE_ENDIAN
         )
 
-        data = data[ATT._struct_size:]
+        data = data[ATT.struct_size:]
         return ATT(opcode, data)
 
     def to_buffer(self):
         """
         Get data string
         """
-        return ustruct.pack(self._struct_format, self.opcode) + self._data
+        return ustruct.pack(self.struct_format, self.opcode) + self._data

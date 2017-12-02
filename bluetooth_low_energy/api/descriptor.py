@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0111
 from bluetooth_low_energy.api.constants import *
 from bluetooth_low_energy.api.uuid import UUID
 
@@ -60,6 +61,7 @@ class Descriptor(object):
             char_desc_value_len=len(buffer),
             char_desc_value=buffer
         )
+
 
 __all__ = [
     'Descriptor'

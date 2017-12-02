@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0111
 from bluetooth_low_energy.api.constants import *
 from bluetooth_low_energy.api.descriptor import Descriptor
 from bluetooth_low_energy.api.uuid import UUID

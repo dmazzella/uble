@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0111
 from micropython import const
 
 from bluetooth_low_energy.protocols.hci import event

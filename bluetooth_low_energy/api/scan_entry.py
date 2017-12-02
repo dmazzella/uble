@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0111
 from bluetooth_low_energy.api.util import format_advertisement
 
 

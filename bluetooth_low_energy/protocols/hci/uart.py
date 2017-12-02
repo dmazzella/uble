@@ -24,8 +24,8 @@ HCI_UART_PKT_TYPES = {
 
 class HCI_UART(object):
     """HCI_UART"""
-    _struct_format = "<B"
-    _struct_format_size = ustruct.calcsize(_struct_format)
+    struct_format = "<B"
+    struct_size = ustruct.calcsize(struct_format)
 
     def __init__(self, pkt_type, data=b''):
         self._pkt_type = pkt_type
@@ -69,12 +69,12 @@ class HCI_UART(object):
         ** [vol 4] Part A (Section 2) Protocol
         """
         pkt_type = ustruct.unpack(
-            HCI_UART._struct_format, data[:HCI_UART._struct_format_size]
+            HCI_UART.struct_format, data[:HCI_UART.struct_size]
         )[0]
-        return HCI_UART(pkt_type, data[HCI_UART._struct_format_size:])
+        return HCI_UART(pkt_type, data[HCI_UART.struct_size:])
 
     def to_buffer(self):
         """
         Get data string
         """
-        return ustruct.pack(HCI_UART._struct_format, self.pkt_type) + self.data
+        return ustruct.pack(HCI_UART.struct_format, self.pkt_type) + self.data

@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0103
+# pylint: disable=C0111
+# pylint: disable=W0235
 import ustruct
 
 from bluetooth_low_energy.protocols.hci import (

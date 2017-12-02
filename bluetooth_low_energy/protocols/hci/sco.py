@@ -22,8 +22,8 @@ HCI_SCO_STRUCT = {
 
 class HCI_SCO(object):
     """HCI_SCO"""
-    _struct_format = "<HB"
-    _struct_size = ustruct.calcsize(_struct_format)
+    struct_format = "<HB"
+    struct_size = ustruct.calcsize(struct_format)
 
     def __init__(self, handle, ps=0, xx=0, data=b''):
         bin_str = "{:016b}{:02b}{:02b}{:012b}".format(
@@ -76,15 +76,15 @@ class HCI_SCO(object):
         ** [vol 2] Part E (Section 5.4) - Exchange of HCI-specific information
         """
         hci_sco = uctypes.struct(
-            uctypes.addressof(data[:HCI_SCO._struct_size]),
+            uctypes.addressof(data[:HCI_SCO.struct_size]),
             HCI_SCO_STRUCT,
             uctypes.LITTLE_ENDIAN
         )
-        data = data[HCI_SCO._struct_size:]
+        data = data[HCI_SCO.struct_size:]
         return HCI_SCO(hci_sco.handle, hci_sco.ps, hci_sco.xx, data)
 
     def to_buffer(self):
         """
         Get data string
         """
-        return ustruct.pack(self._struct_format, self.tobytes) + self.data
+        return ustruct.pack(self.struct_format, self.tobytes) + self.data

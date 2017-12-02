@@ -48,8 +48,8 @@ PB_FLAGS = {
 
 class HCI_ACL(object):
     """HCI_ACL"""
-    _struct_format = "<I"
-    _struct_size = ustruct.calcsize(_struct_format)
+    struct_format = "<I"
+    struct_size = ustruct.calcsize(struct_format)
 
     def __init__(self, handle, pb=0, bc=0, data=b''):
         bin_str = "{:016b}{:02b}{:02b}{:012b}".format(
@@ -106,15 +106,15 @@ class HCI_ACL(object):
         ** [vol 2] Part E (Section 5.4) - Exchange of HCI-specific information
         """
         hci_acl = uctypes.struct(
-            uctypes.addressof(data[:HCI_ACL._struct_size]),
+            uctypes.addressof(data[:HCI_ACL.struct_size]),
             HCI_ACL_STRUCT,
             uctypes.LITTLE_ENDIAN
         )
-        data = data[HCI_ACL._struct_size:]
+        data = data[HCI_ACL.struct_size:]
         return HCI_ACL(hci_acl.handle, hci_acl.pb, hci_acl.bc, data)
 
     def to_buffer(self):
         """
         Get data string
         """
-        return ustruct.pack(self._struct_format, self.tobytes) + self.data
+        return ustruct.pack(self.struct_format, self.tobytes) + self.data

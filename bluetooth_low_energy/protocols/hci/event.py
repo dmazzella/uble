@@ -219,8 +219,8 @@ HCI_EVENTS = {
 
 class HCI_EVENT(object):
     """HCI_EVENT"""
-    _struct_format = "<BB"
-    _struct_size = ustruct.calcsize(_struct_format)
+    struct_format = "<BB"
+    struct_size = ustruct.calcsize(struct_format)
 
     def __init__(self, evtcode, data=b'', module="IDB05A1"):
         evtname, evtstruct = HCI_EVENTS[evtcode]
@@ -303,22 +303,22 @@ class HCI_EVENT(object):
         All integer values are stored in "little-endian" order.
         """
         evtcode, length = ustruct.unpack(
-            HCI_EVENT._struct_format,
-            data[:HCI_EVENT._struct_size]
+            HCI_EVENT.struct_format,
+            data[:HCI_EVENT.struct_size]
         )
-        data = data[HCI_EVENT._struct_size:]
+        data = data[HCI_EVENT.struct_size:]
         return HCI_EVENT(evtcode, data=data)
 
     def to_buffer(self):
         if self.subevtcode:
             return ustruct.pack(
-                self._struct_format + "B",
+                self.struct_format + "B",
                 self.evtcode,
                 self.length,
                 self.subevtcode,
             ) + self.data
         return ustruct.pack(
-            self._struct_format,
+            self.struct_format,
             self.evtcode,
             self.length
         ) + self.data

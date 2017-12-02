@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0111
 from bluetooth_low_energy.api.constants import *
 from micropython import const
 from ubinascii import hexlify, unhexlify
@@ -47,6 +48,7 @@ class UUID(object):
 
     def __hash__(self):
         return hash(self.value)
+
 
 __all__ = [
     'UUID'

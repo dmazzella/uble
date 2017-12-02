@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0111
 import gc
 gc.threshold(4096)
 from micropython import const
@@ -49,8 +50,9 @@ class Peripheral(SPBTLE_RF):
         if event_handler:
             self.set_event_handler(event_handler)
 
-    def run(self, *args, **kwargs):
-        super(Peripheral, self).run(*args, **kwargs)
+    def run(self, callback=None, callback_time=1000):
+        super(Peripheral, self).run(
+            callback=callback, callback_time=callback_time)
 
     def __start__(self):
         # Reset BlueNRG-MS
@@ -266,10 +268,11 @@ class Peripheral(SPBTLE_RF):
 
     def set_discoverable(self):
         """ set_discoverable """
+        len_name = len(self.name)
         local_name = ustruct.pack(
-            "<B{:d}s".format(len(self.name)),
+            "<B{:d}s".format(len_name),
             st_constant.AD_TYPE_COMPLETE_LOCAL_NAME, self.name
-        ) if len(self.name) else b''
+        ) if len_name else b''
 
         # disable scan response
         result = self.hci_le_set_scan_resp_data(

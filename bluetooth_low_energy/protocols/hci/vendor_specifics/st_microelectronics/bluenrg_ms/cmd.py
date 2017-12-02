@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0111
+# pylint: disable=C0302
 import uctypes
 from micropython import const
 

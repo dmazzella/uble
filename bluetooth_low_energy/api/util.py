@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0111
 from bluetooth_low_energy.protocols.hci.vendor_specifics.st_microelectronics.bluenrg_ms import \
     constant as st_constant
 

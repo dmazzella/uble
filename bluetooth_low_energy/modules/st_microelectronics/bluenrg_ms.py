@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0103
+# pylint: disable=C0111
+# pylint: disable=W0235
 import machine
 import utime
 import ustruct
@@ -270,7 +273,8 @@ class BlueNRG_MS(BaseHCI):
                 if self.hci_verify(event):
                     self.__process__(event)
                 # user defined periodic callback
-                if callable(callback) and utime.ticks_diff(utime.ticks_ms(), start) >= callback_time:
+                if callable(callback) and utime.ticks_diff(
+                        utime.ticks_ms(), start) >= callback_time:
                     callback()
                     start = utime.ticks_ms()
 
@@ -334,8 +338,7 @@ class BlueNRG_MS(BaseHCI):
                 rx_write_bytes = header_slave[1]
                 rx_read_bytes = (header_slave[4] << 8) | header_slave[3]
                 if header_slave[0] == 0x02 and (
-                    rx_write_bytes > 0 or rx_read_bytes > 0
-                ):
+                        rx_write_bytes > 0 or rx_read_bytes > 0):
                     # SPI is ready
                     if header:
                         # avoid to write more data that size of the buffer
@@ -417,7 +420,7 @@ class BlueNRG_MS(BaseHCI):
             raise TypeError("HCI_COMMAND")
 
         header, param = cmd.to_buffer(split=True)
-        if len(header) == cmd._struct_size:
+        if len(header) == cmd.struct_size:
             header = ustruct.pack("<B3s", HCI_COMMAND_PKT, header)
         self.hci_send(header, param)
 

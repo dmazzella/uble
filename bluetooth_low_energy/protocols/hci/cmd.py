@@ -488,8 +488,8 @@ class OPCODE(object):
 
 class HCI_COMMAND(object):
     """HCI_COMMAND"""
-    _struct_format = "<HB"
-    _struct_size = ustruct.calcsize(_struct_format)
+    struct_format = "<HB"
+    struct_size = ustruct.calcsize(struct_format)
 
     def __init__(self, ogf=0, ocf=0, opcode=0, data=b'', evtcode=EVT_CMD_STATUS, module="IDB05A1"):
         if ogf and ocf:
@@ -580,9 +580,9 @@ class HCI_COMMAND(object):
         All integer values are stored in "little-endian" order.
         """
         opcode, length = ustruct.unpack_from(
-            HCI_COMMAND._struct_format, data[:HCI_COMMAND._struct_size]
+            HCI_COMMAND.struct_format, data[:HCI_COMMAND.struct_size]
         )
-        data = data[HCI_COMMAND._struct_size:]
+        data = data[HCI_COMMAND.struct_size:]
         return HCI_COMMAND(opcode=opcode, data=data)
 
     def to_buffer(self, split=False):
@@ -591,7 +591,7 @@ class HCI_COMMAND(object):
         """
         header_param = (
             ustruct.pack(
-                self._struct_format,
+                self.struct_format,
                 self.opcode,
                 self.request_length
             ),

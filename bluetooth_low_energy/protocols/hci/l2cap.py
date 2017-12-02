@@ -27,8 +27,8 @@ L2CAP_CHANNEL_IDS = {
 
 class L2CAP(object):
 
-    _struct_format = "<HH"
-    _struct_size = ustruct.calcsize(_struct_format)
+    struct_format = "<HH"
+    struct_size = ustruct.calcsize(struct_format)
 
     def __init__(self, cid, data=b''):
         self._cid = cid
@@ -84,15 +84,15 @@ class L2CAP(object):
         ** [vol 3] Part A (Section 3) - Data Packet Format
         """
         length, cid = ustruct.unpack(
-            L2CAP._struct_format,
-            data[:L2CAP._struct_size]
+            L2CAP.struct_format,
+            data[:L2CAP.struct_size]
         )
-        data = data[L2CAP._struct_size:]
+        data = data[L2CAP.struct_size:]
         return L2CAP(cid, data)
 
     def to_buffer(self):
         return ustruct.pack(
-            self._struct_format,
+            self.struct_format,
             self.length,
             self.cid
         ) + self.data
@@ -159,8 +159,8 @@ L2CAP_SCH_PDUS = {
 
 class L2CAP_SCH(object):
     """L2CAP_SCH"""
-    _struct_format = "<BBH"
-    _struct_size = ustruct.calcsize(_struct_format)
+    struct_format = "<BBH"
+    struct_size = ustruct.calcsize(struct_format)
 
     def __init__(self, code, cid, data=b''):
         self._code = code
@@ -213,10 +213,10 @@ class L2CAP_SCH(object):
         ** [vol 3] Part A (Section 4) - Signaling Packet Formats
         """
         code, cid, length = ustruct.unpack(
-            L2CAP_SCH._struct_format,
-            data[:L2CAP_SCH._struct_size]
+            L2CAP_SCH.struct_format,
+            data[:L2CAP_SCH.struct_size]
         )
-        data = data[L2CAP_SCH._struct_size:]
+        data = data[L2CAP_SCH.struct_size:]
         return L2CAP_SCH(code, cid, data)
 
     def to_buffer(self):
@@ -224,7 +224,7 @@ class L2CAP_SCH(object):
         Get data string
         """
         return ustruct.pack(
-            self._struct_format,
+            self.struct_format,
             self.code,
             self.cid,
             self.length

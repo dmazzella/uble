@@ -39,8 +39,8 @@ SMP_PDUS = {
 
 class SMP(object):
     """SMP"""
-    _struct_format = "<B"
-    _struct_size = ustruct.calcsize(_struct_format)
+    struct_format = "<B"
+    struct_size = ustruct.calcsize(struct_format)
 
     def __init__(self, code, data=b''):
         self._code = code
@@ -85,12 +85,12 @@ class SMP(object):
             ** Core specification 4.1
             ** [vol 3] Part H (Section 3.3) - Command Format
         """
-        code = ustruct.unpack(SMP._struct_format, data[:SMP._struct_size])[0]
-        data = data[SMP._struct_size:]
+        code = ustruct.unpack(SMP.struct_format, data[:SMP.struct_size])[0]
+        data = data[SMP.struct_size:]
         return SMP(code, data)
 
     def to_buffer(self):
         """
         Get data string
         """
-        return ustruct.pack(self._struct_format, self.code) + self.data
+        return ustruct.pack(self.struct_format, self.code) + self.data

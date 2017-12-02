@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0111
 import gc
 gc.threshold(4096)
 import utime
