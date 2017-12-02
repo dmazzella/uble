@@ -30,31 +30,30 @@ def main():
     class BleRepl(object):
         """ BleRepl """
 
-        def __init__(self, repl_peripheral, repl_tx_characteristic_uuid):
-            self.peripheral = repl_peripheral
-            self.tx_uuid = repl_tx_characteristic_uuid
-
         def write(self, data):
             """ write """
-            index = 0
-            def write_repl_tx_characteristic(buffer):
-                nonlocal index
+            def ble_write(d, i=0):
+                """ ble_write """
                 try:
-                    for idx in range(0, len(buffer), 20):
-                        repl_peripheral.write_uuid(self.tx_uuid, buffer[idx:idx + 20])
-                        utime.sleep_us(500)
-                        index += idx
-                    return index
+                    for idx in range(0, len(d), 20):
+                        repl_peripheral.write_uuid(
+                            repl_tx_characteristic_uuid, d[idx:idx + 20])
+                        i += idx
+                        utime.sleep_us(250)
                 except ValueError:
-                    return write_repl_tx_characteristic(buffer[index:])
-            return write_repl_tx_characteristic(data)
-
+                    return ble_write(d, i)
+                return i
+            return ble_write(data)
 
         def readinto(self, data):
             """ readinto """
+            nonlocal buffer
             while len(buffer) == 0:
                 return None
             ustruct.pack_into("<B", data, 0, buffer.popleft())
+            # char_ctrl_c = b"\x03"
+            # if bytearray(char_ctrl_c) == data:
+            #     raise KeyboardInterrupt()
             return 1
 
     repl_service_uuid = UUID('6e400001-b5a3-f393-e0a9-e50e24dcca9e')
@@ -67,7 +66,7 @@ def main():
         if evt == EVT_GAP_CONNECTED:
             log.info("EVT_GAP_CONNECTED %s", binascii.hexlify(data, ':'))
             buffer.clear()
-            os.dupterm(BleRepl(repl_peripheral, repl_tx_characteristic_uuid))
+            os.dupterm(BleRepl())
         elif evt == EVT_GAP_DISCONNECTED:
             log.info("EVT_GAP_DISCONNECTED")
             os.dupterm(None)
@@ -79,7 +78,7 @@ def main():
         elif evt == EVT_GATTS_WRITE_PERMIT_REQ:
             log.debug("EVT_GATTS_WRITE_PERMIT_REQ %s %s",
                       uuid, binascii.hexlify(data))
-            # + b'\x0d'
+            # b'\x0d'
             buffer.extend(data)
 
     # REPL RX characteristic
@@ -132,6 +131,8 @@ def main():
         len(service_uuid_list), binascii.hexlify(service_uuid_list)
     )
 
+    # uBLE v0.1: Power on
+    # machine.Pin('X8', machine.Pin.OUT_PP, value=0)
     repl_peripheral = Peripheral(
         os.urandom(6),
         name="repl",
@@ -140,7 +141,10 @@ def main():
         services=[
             repl_service
         ],
-        event_handler=repl_event_handler
+        event_handler=repl_event_handler,
+        # uBLE v0.1: nss, rst
+        # nss_pin=machine.Pin('Y5', machine.Pin.OUT_PP),
+        # rst_pin=machine.Pin('X9', machine.Pin.OUT_PP)
     )
     _thread.start_new_thread(repl_peripheral.run, tuple(), dict())
 
