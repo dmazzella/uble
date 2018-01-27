@@ -184,9 +184,9 @@ class BlueNRG_MS(BaseHCI):
     def __init__(
         self,
         spi_bus=machine.SPI(2, baudrate=8000000, polarity=0),
-        irq_pin=machine.Pin('Y3', machine.Pin.IN, machine.Pin.PULL_DOWN),
-        rst_pin=machine.Pin('Y4', machine.Pin.OUT_PP),
-        nss_pin=machine.Pin('Y5', machine.Pin.OUT_PP),
+        irq_pin=machine.Pin('B8', machine.Pin.IN, machine.Pin.PULL_DOWN),
+        rst_pin=machine.Pin('B9', machine.Pin.OUT_PP),
+        nss_pin=machine.Pin('B12', machine.Pin.OUT_PP),
     ):
         """
         Defaults:
@@ -202,12 +202,22 @@ class BlueNRG_MS(BaseHCI):
                 crc:
                 crc_calc: SPI_CRCCALCULATION_DISABLED
 
-            - IRQ  on Y3 Pin
-            - RST  on Y4 Pin
-            - NSS  on Y5 Pin
-            - SCK  on Y6 Pin
-            - MISO on Y7 Pin
-            - MOSI on Y8 Pin
+            PYBV1x:
+            - IRQ  on Y3/B8 Pin
+            - RST  on Y4/B9 Pin
+            - NSS  on Y5/B12 Pin
+            - SCK  on Y6/B13 Pin
+            - MISO on Y7/B14 Pin
+            - MOSI on Y8/B15 Pin
+
+            ESPRUINO_PICO:
+            - IRQ  on B8 Pin
+            - RST  on B9 Pin
+            - NSS  on A10 Pin
+            - SCK  on A7 Pin
+            - MISO on A6 Pin
+            - MOSI on A5 Pin
+
         """
 
         if not isinstance(spi_bus, machine.SPI):
