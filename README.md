@@ -15,7 +15,7 @@ Usage
 ---------------------
 
 - Parsing of HCI packets:
-
+```python
         MicroPython v1.8.7-79-g221f88d-dirty on 2017-01-26; PYBv1.1 with STM32F405RG
         Type "help()" for more information.
         >>> from bluetooth_low_energy.protocols.hci import (cmd, uart)
@@ -29,10 +29,10 @@ Usage
         >>> hci_cmd.to_buffer()
         b'\x03\x0c\x00'        
         >>>
-
+```
         
 - Building of HCI Packets:
-
+```python
         MicroPython v1.8.7-79-g221f88d-dirty on 2017-01-26; PYBv1.1 with STM32F405RG
         Type "help()" for more information.
         >>> from bluetooth_low_energy.protocols.hci import cmd
@@ -42,7 +42,7 @@ Usage
         >>> hci_cmd.to_buffer()
         b'\x18 \x00'
         >>>
-
+```
 - Control BLE chips examples
 
     With low level api:
@@ -109,7 +109,7 @@ To enable the functionality you need to freeze the package 'bluetooth_low_energy
 to do this, copy the package 'bluetooth_low_energy' into 'micropython-lib'.
 
 Navigate to the folder containing the repository [micropython](https://github.com/micropython/micropython):
-
+```bash
         $ cd stmhal
         $ make FROZEN_MPY_DIR="~/uble/micropython-lib"
-
+```
