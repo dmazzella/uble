@@ -22,6 +22,7 @@ class Peripheral(SPBTLE_RF):
     def __init__(self, address, *args, **kwargs):
         address_type = kwargs.pop('address_type', ADDR_TYPE_PUBLIC)
         name = kwargs.pop('name', '')
+        pin = kwargs.pop('pin', 123456)
         connectable = kwargs.pop('connectable', False)
         interval = kwargs.pop('interval', 0)
         data = kwargs.pop('data', None)
@@ -33,6 +34,7 @@ class Peripheral(SPBTLE_RF):
         self.address = address
         self.address_type = address_type
         self.name = name
+        self.pin = pin
         self.connectable = connectable
         self.interval = interval
         self.data = data
@@ -139,7 +141,7 @@ class Peripheral(SPBTLE_RF):
             min_encryption_key_size=st_constant.MIN_ENCRY_KEY_SIZE,
             max_encryption_key_size=st_constant.MAX_ENCRY_KEY_SIZE,
             use_fixed_pin=bool(st_constant.USE_FIXED_PIN_FOR_PAIRING),
-            fixed_pin=123456,
+            fixed_pin=self.pin,
             bonding_mode=st_constant.BONDING).response_struct
         if result.status != status.BLE_STATUS_SUCCESS:
             raise ValueError("aci_gap_set_auth_requirement status: {:02x}".format(
