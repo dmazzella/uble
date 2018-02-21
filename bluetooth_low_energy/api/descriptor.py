@@ -10,7 +10,8 @@ class Descriptor(object):
     def __init__(self, uuid, value,
                  perms=PERM_NONE,
                  acc=ACC_NO_ACCESS,
-                 mask=MASK_DONT_NOTIFY_EVENTS):
+                 mask=MASK_DONT_NOTIFY_EVENTS,
+                 is_variable=True):
         if not isinstance(uuid, UUID):
             raise TypeError("uuid must be of type UUID")
         if not isinstance(acc, int):
@@ -28,6 +29,7 @@ class Descriptor(object):
         self.perms = perms
         self.acc = acc
         self.mask = mask
+        self.is_variable = is_variable
 
     def __properties__(self, service_handle=None, char_handle=None):
         self.service_handle = service_handle
@@ -44,7 +46,7 @@ class Descriptor(object):
             acc_permissions=self.acc,
             gatt_evt_mask=self.mask,
             encry_key_size=st_constant.MAX_ENCRY_KEY_SIZE,
-            is_variable=True
+            is_variable=self.is_variable
         )
 
     def __str__(self):

@@ -13,6 +13,7 @@ class Characteristic(object):
                  props=PROP_READ | PROP_WRITE,
                  perms=PERM_NONE,
                  mask=MASK_DONT_NOTIFY_EVENTS,
+                 is_variable=True,
                  descriptors=None):
 
         if not isinstance(uuid, UUID):
@@ -31,6 +32,7 @@ class Characteristic(object):
         self.props = props
         self.perms = perms
         self.mask = mask
+        self.is_variable = is_variable
         self.descriptors = []
         if descriptors:
             for descriptor in descriptors:
@@ -48,7 +50,7 @@ class Characteristic(object):
             sec_permissions=self.perms,
             gatt_evt_mask=self.mask,
             encry_key_size=st_constant.MAX_ENCRY_KEY_SIZE,
-            is_variable=True
+            is_variable=self.is_variable
         )
 
     def __str__(self):
