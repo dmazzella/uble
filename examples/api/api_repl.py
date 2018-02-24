@@ -75,11 +75,13 @@ def main():
             log.debug("EVT_GATTS_WRITE %s", binascii.hexlify(data))
         elif evt == EVT_GATTS_READ_PERMIT_REQ:
             log.debug("EVT_GATTS_READ_PERMIT_REQ %s", uuid)
+            return True
         elif evt == EVT_GATTS_WRITE_PERMIT_REQ:
             log.debug("EVT_GATTS_WRITE_PERMIT_REQ %s %s",
                       uuid, binascii.hexlify(data))
             # b'\x0d'
             buffer.extend(data)
+            return True
 
     # REPL RX characteristic
     repl_rx_characteristic = Characteristic(
@@ -118,7 +120,7 @@ def main():
         st_constant.FLAG_BIT_LE_GENERAL_DISCOVERABLE_MODE |\
         st_constant.FLAG_BIT_BR_EDR_NOT_SUPPORTED,
         # Length.
-        17,
+        1 + len(repl_service_uuid.value),
         # Complete list of 128-bit Service UUIDs data type value.
         st_constant.AD_TYPE_128_BIT_SERV_UUID_CMPLT_LIST,
     ] + [

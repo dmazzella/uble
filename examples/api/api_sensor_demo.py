@@ -78,8 +78,10 @@ def main():
             if uuid is not None:
                 print("{!s}".format(uuid))
             #write_characteristics()
+            return True
         elif event == EVT_GATTS_WRITE_PERMIT_REQ:
             print("EVT_GATTS_WRITE_PERMIT_REQ")
+            return True
 
     def notify_callback():
         """ notify_callback """
