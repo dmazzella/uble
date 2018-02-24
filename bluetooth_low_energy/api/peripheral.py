@@ -231,42 +231,44 @@ class Peripheral(SPBTLE_RF):
                                 :hci_evt.struct.data_length]
                         )
                 elif hci_evt.subevtcode == st_event.EVT_BLUE_GATT_WRITE_PERMIT_REQ:
-                    result = self.aci_gatt_write_response(
-                        conn_handle=self.connection_handle,
-                        attr_handle=hci_evt.struct.attr_handle,
-                        write_status=False,
-                        err_code=0,
-                        att_val_len=hci_evt.struct.data_length,
-                        att_val=hci_evt.struct.data_buffer[
-                            :hci_evt.struct.data_length]
-                    ).response_struct
-                    if result.status != status.BLE_STATUS_SUCCESS:
-                        raise ValueError(
-                            "aci_gatt_write_response status: {:02x}".format(
-                                result.status))
-                    elif result.status == status.BLE_STATUS_SUCCESS:
-                        if callable(self.event_handler):
-                            self.event_handler(
+                    if callable(self.event_handler):
+                        if self.event_handler(
                                 EVT_GATTS_WRITE_PERMIT_REQ,
                                 handler=hci_evt.struct.attr_handle,
                                 data=hci_evt.struct.data_buffer[
                                     :hci_evt.struct.data_length]
-                            )
+                            ):
+                            result = self.aci_gatt_write_response(
+                                conn_handle=self.connection_handle,
+                                attr_handle=hci_evt.struct.attr_handle,
+                                write_status=False,
+                                err_code=0,
+                                att_val_len=hci_evt.struct.data_length,
+                                att_val=hci_evt.struct.data_buffer[
+                                    :hci_evt.struct.data_length]
+                            ).response_struct
+                            if result.status != status.BLE_STATUS_SUCCESS:
+                                raise ValueError(
+                                    "aci_gatt_write_response status: {:02x}".format(
+                                        result.status))
+                            elif result.status == status.BLE_STATUS_SUCCESS:
+                                pass
+
                 elif hci_evt.subevtcode == st_event.EVT_BLUE_GATT_READ_PERMIT_REQ:
-                    if self.connection_handle is not None:
-                        result = self.aci_gatt_allow_read(
-                            conn_handle=self.connection_handle).response_struct
-                        if result.status != status.BLE_STATUS_SUCCESS:
-                            raise ValueError(
-                                "aci_gatt_allow_read status: {:02x}".format(
-                                    result.status))
-                        elif result.status == status.BLE_STATUS_SUCCESS:
-                            if callable(self.event_handler):
-                                self.event_handler(
-                                    EVT_GATTS_READ_PERMIT_REQ,
-                                    handler=hci_evt.struct.attr_handle,
-                                    data=None
-                                )
+                    if self.connection_handle is not None and callable(self.event_handler):
+                        if self.event_handler(
+                                EVT_GATTS_READ_PERMIT_REQ,
+                                handler=hci_evt.struct.attr_handle,
+                                data=None
+                            ):
+                            result = self.aci_gatt_allow_read(
+                                conn_handle=self.connection_handle).response_struct
+                            if result.status != status.BLE_STATUS_SUCCESS:
+                                raise ValueError(
+                                    "aci_gatt_allow_read status: {:02x}".format(
+                                        result.status))
+                            elif result.status == status.BLE_STATUS_SUCCESS:
+                                pass
 
     def set_discoverable(self):
         """ set_discoverable """
