@@ -91,3 +91,8 @@ ENV/
 # micropython-lib
 micropython-lib/bluetooth_low_energy/
 
+# vs code
+.vscode/*
+
+# vs code - Local History
+.history/*
