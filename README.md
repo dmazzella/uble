@@ -111,6 +111,6 @@ to do this, copy the package 'bluetooth_low_energy' into 'micropython-lib'.
 
 Navigate to the folder containing the repository [micropython](https://github.com/micropython/micropython):
 ```bash
-        $ cd stmhal
+        $ cd ports/stm32
         $ make FROZEN_MPY_DIR="~/uble/micropython-lib"
 ```
