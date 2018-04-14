@@ -159,6 +159,9 @@ HCI_VENDOR_EVENTS.update(ST_HCI_VENDOR_EVENTS)
 HCI_PCK_TYPE_OFFSET = const(0)
 EVENT_PARAMETER_TOT_LEN_OFFSET = const(2)
 
+_READ_HEADER_MASTER = b'\x0B\x00\x00\x00\x00'
+_WRITE_HEADER_MASTER = b'\x0A\x00\x00\x00\x00'
+
 
 class CSContext(object):
 
@@ -232,6 +235,8 @@ class BlueNRG_MS(BaseHCI):
         self._irq_pin = irq_pin
         self._rst_pin = rst_pin
         self._nss_pin = nss_pin
+
+        self._rw_header_slave = bytearray(5)
 
         # Release CS line
         self._nss_pin.on()
@@ -309,14 +314,17 @@ class BlueNRG_MS(BaseHCI):
         Read packet from BlueNRG-MS module
         """
         result = None
-        # Exchange header
-        header_master = b'\x0B\x00\x00\x00\x00'
-        header_slave = bytearray(len(header_master))
         while retry:
             with CSContext(self._nss_pin):
-                self._spi_bus.write_readinto(header_master, header_slave)
-                rx_read_bytes = (header_slave[4] << 8) | header_slave[3]
-                if header_slave[0] == 0x02 and rx_read_bytes > 0:
+                # Exchange header
+                self._spi_bus.write_readinto(
+                    _READ_HEADER_MASTER,
+                    self._rw_header_slave
+                )
+                rx_read_bytes = (
+                    self._rw_header_slave[4] << 8
+                ) | self._rw_header_slave[3]
+                if self._rw_header_slave[0] == 0x02 and rx_read_bytes > 0:
                     # SPI is ready
                     # avoid to read more data that size of the buffer
                     if rx_read_bytes > size:
@@ -339,15 +347,18 @@ class BlueNRG_MS(BaseHCI):
         Write packet to BlueNRG-MS module
         """
         result = None
-        # Exchange header
-        header_master = b'\x0A\x00\x00\x00\x00'
-        header_slave = bytearray(len(header_master))
         while retry:
             with CSContext(self._nss_pin):
-                self._spi_bus.write_readinto(header_master, header_slave)
-                rx_write_bytes = header_slave[1]
-                rx_read_bytes = (header_slave[4] << 8) | header_slave[3]
-                if header_slave[0] == 0x02 and (
+                # Exchange header
+                self._spi_bus.write_readinto(
+                    _WRITE_HEADER_MASTER,
+                    self._rw_header_slave
+                )
+                rx_write_bytes = self._rw_header_slave[1]
+                rx_read_bytes = (
+                    self._rw_header_slave[4] << 8
+                ) | self._rw_header_slave[3]
+                if self._rw_header_slave[0] == 0x02 and (
                         rx_write_bytes > 0 or rx_read_bytes > 0):
                     # SPI is ready
                     if header:
