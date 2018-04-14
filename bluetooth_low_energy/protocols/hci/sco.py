@@ -47,9 +47,9 @@ class HCI_SCO(object):
         elif name == "tobytes":
             return self._tobytes
         elif name == "length":
-            return len(self._data) if self._data else 0
+            return len(self._data)
         elif name == "data":
-            return self._data[:self.length]
+            return self._data
 
     def __str__(self):
         desc_str = (

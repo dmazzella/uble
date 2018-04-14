@@ -55,9 +55,9 @@ class SMP(object):
         elif name == "code_name":
             return self._code_name
         elif name == "length":
-            return len(self._data) if self._data else 0
+            return len(self._data)
         elif name == "data":
-            return self._data[:self.length]
+            return self._data
 
     def __str__(self):
         desc_str = (

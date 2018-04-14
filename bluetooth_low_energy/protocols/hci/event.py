@@ -238,7 +238,7 @@ class HCI_EVENT(object):
                 subevtname, evtstruct = HCI_LE_META_EVENTS[subevtcode]
             elif evtcode == EVT_VENDOR:
                 subevtname, evtstruct = HCI_VENDOR_EVENTS[subevtcode]
-            data = bytes(subevt.data[:len(data)])
+            data = bytes(subevt.data)
 
         self._evtcode = evtcode
         self._evtname = evtname
@@ -268,9 +268,9 @@ class HCI_EVENT(object):
                 uctypes.LITTLE_ENDIAN
             )
         elif name == "length":
-            return len(self._data) if self._data else 0
+            return len(self._data)
         elif name == "data":
-            return self._data[:self.length]
+            return self._data
 
     def __str__(self):
         desc_str = (

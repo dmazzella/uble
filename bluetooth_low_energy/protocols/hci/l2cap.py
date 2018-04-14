@@ -43,9 +43,9 @@ class L2CAP(object):
         elif name == "cid_name":
             return self._cid_name
         elif name == "length":
-            return len(self._data) if self._data else 0
+            return len(self._data)
         elif name == "data":
-            return self._data[:self.length]
+            return self._data
 
     def __str__(self):
         desc_str = (
@@ -178,9 +178,9 @@ class L2CAP_SCH(object):
         elif name == "cid_name":
             return self._cid_name
         elif name == "length":
-            return len(self._data) if self._data else 0
+            return len(self._data)
         elif name == "data":
-            return self._data[:self.length]
+            return self._data
 
     def __str__(self):
         desc_str = (

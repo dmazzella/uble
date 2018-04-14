@@ -545,13 +545,13 @@ class HCI_COMMAND(object):
                 uctypes.LITTLE_ENDIAN
             )
         elif name == "request_length":
-            return len(self._request_data) if self._request_data else 0
+            return len(self._request_data)
         elif name == "request_data":
-            return self._request_data[:self.request_length]
+            return self._request_data
         elif name == "response_length":
-            return len(self._response_data) if self._response_data else 0
+            return len(self._response_data)
         elif name == "response_data":
-            return self._response_data[:self.response_length]
+            return self._response_data
         else:
             raise AttributeError(name)
 
