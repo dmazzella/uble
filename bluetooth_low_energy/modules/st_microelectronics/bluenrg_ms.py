@@ -334,7 +334,7 @@ class BlueNRG_MS(BaseHCI):
                     self._spi_bus.write_readinto(data, result)
                     break
                 else:
-                    utime.sleep_us(150)
+                    utime.sleep_us(50)
             retry -= 1
 
         # Add a small delay to give time to the BlueNRG to set the IRQ pin low
@@ -384,7 +384,7 @@ class BlueNRG_MS(BaseHCI):
                     else:
                         break
                 else:
-                    utime.sleep_us(150)
+                    utime.sleep_us(50)
             retry -= 1
 
         return result
