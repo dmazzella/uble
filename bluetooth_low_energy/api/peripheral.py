@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=C0111
-import gc
-gc.threshold(4096)
 from micropython import const
 from binascii import hexlify, unhexlify
 
