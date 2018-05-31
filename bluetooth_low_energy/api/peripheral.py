@@ -27,7 +27,8 @@ class Peripheral(SPBTLE_RF):
         services = kwargs.pop('services', [])
         event_handler = kwargs.pop('event_handler', None)
         super(Peripheral, self).__init__(*args, **kwargs)
-        address = address if isinstance(address, bytes) else unhexlify(address)
+        address = address if isinstance(
+            address, (bytes, bytearray, memoryview)) else unhexlify(address)
 
         self.address = address
         self.address_type = address_type
@@ -304,7 +305,7 @@ class Peripheral(SPBTLE_RF):
             raise ValueError("aci_gap_set_discoverable status: {:02x}".format(
                 result.status))
 
-        if isinstance(self.data, (bytes, bytearray)):
+        if isinstance(self.data, (bytes, bytearray, memoryview)):
             result = self.aci_gap_update_adv_data(
                 adv_len=len(self.data),
                 adv_data=self.data).response_struct

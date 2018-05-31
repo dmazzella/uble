@@ -22,7 +22,7 @@ class Scanner(SPBTLE_RF):
         super(Scanner, self).__init__(*args, **kwargs)
 
         self.address = address if isinstance(
-            address, bytes) else unhexlify(address)
+            address, (bytes, bytearray, memoryview)) else unhexlify(address)
         self.name = name
         self.response = []
 

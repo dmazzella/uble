@@ -77,7 +77,7 @@ class Characteristic(object):
         return self.descriptors
 
     def __write_proprerties__(self, buffer=None, offset=0):
-        if not isinstance(buffer, (bytes, bytearray)):
+        if not isinstance(buffer, (bytes, bytearray, memoryview)):
             raise TypeError("buffer must of type bytes or bytearray.")
         return dict(
             serv_handle=self.service_handle,
