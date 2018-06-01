@@ -25,7 +25,7 @@ log = logging.getLogger("repl")
 def main():
     """ main """
 
-    buffer = collections.deque()
+    buffer = collections.deque((), 80)
 
     class BleRepl(object):
         """ BleRepl """
@@ -65,7 +65,8 @@ def main():
         uuid = repl_peripheral.uuid_from_handle((handler or 0) - 1)
         if evt == EVT_GAP_CONNECTED:
             log.info("EVT_GAP_CONNECTED %s", binascii.hexlify(data, ':'))
-            buffer.clear()
+            if hasattr(buffer, 'clear'):
+                buffer.clear()
             os.dupterm(BleRepl())
         elif evt == EVT_GAP_DISCONNECTED:
             log.info("EVT_GAP_DISCONNECTED")
@@ -79,8 +80,7 @@ def main():
         elif evt == EVT_GATTS_WRITE_PERMIT_REQ:
             log.debug("EVT_GATTS_WRITE_PERMIT_REQ %s %s",
                       uuid, binascii.hexlify(data))
-            # b'\x0d'
-            buffer.extend(data)
+            [buffer.append(d) for d in data]
             return True
 
     # REPL RX characteristic
