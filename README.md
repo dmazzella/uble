@@ -59,7 +59,7 @@ Usage
     - [api_sensor_demo.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_sensor_demo.py): usable for test with 'BlueNRG' app
     - [api_scan.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_scan.py): implement a Scanner object used to scan for LE devices which are broadcasting advertising data 
     - [api_hid_over_gatt.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_hid_over_gatt.py): implement a HID over GATT keyboard (tested with iOS and Windows 10) 
-    - [api_repl.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_repl.py): implement a Bluetooth LE REPL (need _thread enabled and external dependency collections.deque already available into folder 'micropython-lib' of this repository )
+    - [api_repl.py](https://github.com/dmazzella/uble/blob/master/examples/api/api_repl.py): implement a Bluetooth LE REPL (need _thread enabled and external dependency collections.deque already available into folder 'micropython-lib' of this repository. If found ucollections.deque use it internally)
       Usable terminal available at [Micropython WebBluetooth REPL](https://dmazzella.github.io/htdocs/repl/)
 
       <img src="https://media.giphy.com/media/xT9IgI6rvHY8d6Kjqo/source.gif" alt="MicroPython_WebBluetooth_REPL"/>
