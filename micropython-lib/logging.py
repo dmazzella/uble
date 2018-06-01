@@ -62,6 +62,15 @@ class Logger(object):
     def critical(self, msg, *args, **kwargs):
         self.log(CRITICAL, msg, *args, **kwargs)
 
+    def exc(self, e, msg, *args): 
+        self.log(ERROR, msg, *args)
+        sys.print_exception(e, _stream)
+
+    def exception(self, msg, *args):
+        e = None
+        if hasattr(sys, 'exc_info'):
+            e = sys.exc_info()[1]
+        self.exc(e, msg, *args)
 
 _level = INFO
 _loggers = {}
