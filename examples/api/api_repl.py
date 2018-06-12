@@ -2,6 +2,7 @@
 """ uBLE REPL """
 import gc
 gc.threshold(4096)
+import io
 import os
 import binascii
 import ustruct
@@ -27,7 +28,7 @@ def main():
 
     buffer = collections.deque((), 80)
 
-    class BleRepl(object):
+    class BleRepl(io.IOBase):
         """ BleRepl """
 
         def write(self, data):
