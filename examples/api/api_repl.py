@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """ uBLE REPL """
 import gc
-gc.threshold(4096)
-import io
+gc.threshold((gc.mem_alloc() + gc.mem_free()) // 10)
+
+import pyb
 import os
+import io
 import binascii
 import ustruct
 import utime
@@ -20,54 +22,60 @@ from bluetooth_low_energy.api.service import Service
 from bluetooth_low_energy.api.uuid import UUID
 
 logging.basicConfig(level=logging.INFO)
-log = logging.getLogger("repl")
+log = logging.getLogger("NUS")
 
 
 def main():
     """ main """
 
-    buffer = collections.deque((), 80)
+    repl_service_uuid = UUID('6e400001-b5a3-f393-e0a9-e50e24dcca9e')
+    repl_rx_characteristic_uuid = UUID('6e400002-b5a3-f393-e0a9-e50e24dcca9e')
+    repl_tx_characteristic_uuid = UUID('6e400003-b5a3-f393-e0a9-e50e24dcca9e')
+
+    buffer_tx = collections.deque((), 2048)
+    buffer_rx = collections.deque((), 4)
 
     class BleRepl(io.IOBase):
         """ BleRepl """
 
         def write(self, data):
             """ write """
-            def ble_write(d, i=0):
-                """ ble_write """
-                try:
-                    for idx in range(0, len(d), 20):
-                        repl_peripheral.write_uuid(
-                            repl_tx_characteristic_uuid, d[idx:idx + 20])
-                        i += idx
-                        utime.sleep_us(250)
-                except ValueError:
-                    return ble_write(d, i)
-                return i
-            return ble_write(data)
+            for d in data:
+                buffer_tx.append(d)
+            return len(data)
 
         def readinto(self, data):
             """ readinto """
-            nonlocal buffer
-            while len(buffer) == 0:
+            while len(buffer_rx) == 0:
                 return None
-            ustruct.pack_into("<B", data, 0, buffer.popleft())
-            # char_ctrl_c = b"\x03"
-            # if bytearray(char_ctrl_c) == data:
-            #     raise KeyboardInterrupt()
+            data[0] = buffer_rx.popleft()
             return 1
 
-    repl_service_uuid = UUID('6e400001-b5a3-f393-e0a9-e50e24dcca9e')
-    repl_rx_characteristic_uuid = UUID('6e400002-b5a3-f393-e0a9-e50e24dcca9e')
-    repl_tx_characteristic_uuid = UUID('6e400003-b5a3-f393-e0a9-e50e24dcca9e')
+    def repl_transmit(*args, **kwargs):
+        data = bytearray(20)
+        data_mv = memoryview(data)
+        blank = b'\x00' * 20
+        while True:
+            tx_len = len(buffer_tx)
+            if tx_len:
+                for i in range(min(20, tx_len)):
+                    data_mv[i] = buffer_tx.popleft()
+                repl_peripheral.write_uuid(
+                    repl_tx_characteristic_uuid,
+                    data_mv[:tx_len]
+                )
+                data_mv[:]= blank
+            pyb.wfi()
 
     def repl_event_handler(evt, handler=None, data=None):
         """ event callback """
         uuid = repl_peripheral.uuid_from_handle((handler or 0) - 1)
         if evt == EVT_GAP_CONNECTED:
             log.info("EVT_GAP_CONNECTED %s", binascii.hexlify(data, ':'))
-            if hasattr(buffer, 'clear'):
-                buffer.clear()
+            if hasattr(buffer_rx, "clear"):
+                buffer_rx.clear()
+            if hasattr(buffer_tx, "clear"):
+                buffer_tx.clear()
             os.dupterm(BleRepl())
         elif evt == EVT_GAP_DISCONNECTED:
             log.info("EVT_GAP_DISCONNECTED")
@@ -81,7 +89,8 @@ def main():
         elif evt == EVT_GATTS_WRITE_PERMIT_REQ:
             log.debug("EVT_GATTS_WRITE_PERMIT_REQ %s %s",
                       uuid, binascii.hexlify(data))
-            [buffer.append(d) for d in data]
+            for d in data:
+                buffer_rx.append(d)
             return True
 
     # REPL RX characteristic
@@ -138,7 +147,7 @@ def main():
     # machine.Pin('X8', machine.Pin.OUT_PP, value=0)
     repl_peripheral = Peripheral(
         os.urandom(6),
-        name="repl",
+        name="NUS",
         connectable=True,
         data=service_uuid_list,
         services=[
@@ -149,7 +158,8 @@ def main():
         # nss_pin=machine.Pin('Y5', machine.Pin.OUT_PP),
         # rst_pin=machine.Pin('X9', machine.Pin.OUT_PP)
     )
-    _thread.start_new_thread(repl_peripheral.run, tuple(), dict())
+    _thread.start_new_thread(repl_peripheral.run, (), {})
+    _thread.start_new_thread(repl_transmit, (), {})
 
 
 if __name__ == "__main__":
