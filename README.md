@@ -5,6 +5,10 @@ Lightweight Bluetooth Low Energy driver written in pure python for micropython.
 WARNING: this project is in beta stage and is subject to changes of the
 code-base, including project-wide name changes and API changes.
 
+> [!TIP]
+> If you find **uble** useful, consider :star: this project
+> and why not ... [Buy me a coffee](https://www.buymeacoffee.com/damianomazp) :smile:
+
 Features
 ---------------------
 
